@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   additionalContent: {
     flex: 1,
-    backgroundColor: "#EFFFFA",
+    backgroundColor: "#F2FFFF",
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     padding: 32,

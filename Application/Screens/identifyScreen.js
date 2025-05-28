@@ -38,7 +38,10 @@ const Identify = (props) => {
       quality: 1,
     });
 
-    console.log(result);
+    if (!result.canceled) {
+      navigation.navigate("PicturePreview", { uri: result.assets[0].uri });
+    }
+    // navigation.navigate("PicturePreview", { uri: photo.uri });
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);

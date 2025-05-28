@@ -45,6 +45,7 @@
    PORT=3000
    MONGODB_URL=Your_Mongodb_URL
    JWT_SECRET=Put_256Ch_Long_Secret_String
+   PLANT_ID_API_KEY=Your_PLANT_ID_API_KEY
    ```
 4. **Start Expo:**
 

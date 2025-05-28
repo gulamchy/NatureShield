@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
@@ -17,18 +18,19 @@ import axios from "axios";
 
 import * as ImageManipulator from "expo-image-manipulator";
 import { Image as RNImage, Platform } from "react-native";
+import { useState } from "react";
 
 export default function PicturePreview() {
   const backendIp = process.env.EXPO_PUBLIC_BACKEND_IP;
   const backendPort = process.env.EXPO_PUBLIC_BACKEND_PORT;
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
   const route = useRoute();
   const uri = route?.params?.uri;
-  const newPath = route?.params?.newPath;
+  // const newPath = route?.params?.newPath;
   const url_plant = `http://${backendIp}:${backendPort}/analyze`;
-
 
   // const uploadToServer = async (localUri) => {
   //   try {
@@ -100,57 +102,95 @@ export default function PicturePreview() {
   //   }
   // };
 
-// Google Cloud Vision Server
+  // Google Cloud Vision Server
 
+  // const uploadToServer = async (localUri) => {
+  //   try {
+  //     // Step 1: Get image dimensions to check width
+  //     // const { width, height } = await new Promise((resolve, reject) => {
+  //     //   // react-native built-in method
+  //     //   RNImage.getSize(
+  //     //     localUri,
+  //     //     (w, h) => resolve({ width: w, height: h }),
+  //     //     (error) => reject(error)
+  //     //   );
+  //     // });
+
+  //     // let resizedUri = localUri;
+
+  //     // Step 2: Resize if width > 500 px, keep aspect ratio
+  //     // if (width > 500) {
+  //     //   const newHeight = Math.floor((500 * height) / width);
+
+  //     //   const resizedResult = await ImageManipulator.manipulateAsync(
+  //     //     localUri,
+  //     //     [{ resize: { width: 500, height: newHeight } }],
+  //     //     { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+  //     //   );
+  //     //   resizedUri = resizedResult.uri;
+  //     // }
+  //     const filename = localUri.split("/").pop();
+  //     const type = "image/jpeg"; // or use mime.lookup(filename)
+
+  //     const formData = new FormData();
+  //     formData.append("image", {
+  //       uri: localUri,
+  //       name: filename,
+  //       type,
+  //     });
+
+  //     // const filename = resizedUri.split("/").pop();
+  //     // const type = "image/jpeg";
+
+  //     // const formData = new FormData();
+  //     // formData.append("image", {
+  //     //   uri:
+  //     //     Platform.OS === "ios"
+  //     //       ? resizedUri.replace("file://", "")
+  //     //       : resizedUri,
+  //     //   name: filename,
+  //     //   type,
+  //     // });
+
+  //     const response = await fetch("http://10.111.173.150:5001/analyze", {
+  //       method: "POST",
+  //       body: formData,
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     const data = await response.json();
+  //     console.log("Server response:", data);
+
+  //     navigation.navigate("ResultScreen", {
+  //       uri: uri, // original image URI
+  //       newPath: newPath, // local file path, if needed
+  //       scientificName: data.scientific_name,
+  //       isInvasive: data.invasive,
+  //       confidence: data.confidence_percent,
+  //     });
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //     alert("Upload failed: " + error.message);
+  //   }
+  // };
+
+  // Plant.ID Server
   const uploadToServer = async (localUri) => {
     try {
-      // Step 1: Get image dimensions to check width
-      // const { width, height } = await new Promise((resolve, reject) => {
-      //   // react-native built-in method
-      //   RNImage.getSize(
-      //     localUri,
-      //     (w, h) => resolve({ width: w, height: h }),
-      //     (error) => reject(error)
-      //   );
-      // });
-
-      // let resizedUri = localUri;
-
-      // Step 2: Resize if width > 500 px, keep aspect ratio
-      // if (width > 500) {
-      //   const newHeight = Math.floor((500 * height) / width);
-
-      //   const resizedResult = await ImageManipulator.manipulateAsync(
-      //     localUri,
-      //     [{ resize: { width: 500, height: newHeight } }],
-      //     { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
-      //   );
-      //   resizedUri = resizedResult.uri;
-      // }
+      setLoading(true);
       const filename = localUri.split("/").pop();
-      const type = "image/jpeg"; // or use mime.lookup(filename)
+      const type = "image/jpeg";
 
       const formData = new FormData();
       formData.append("image", {
-        uri: localUri,
+        uri: Platform.OS === "ios" ? localUri.replace("file://", "") : localUri,
         name: filename,
         type,
       });
 
-      // const filename = resizedUri.split("/").pop();
-      // const type = "image/jpeg";
-
-      // const formData = new FormData();
-      // formData.append("image", {
-      //   uri:
-      //     Platform.OS === "ios"
-      //       ? resizedUri.replace("file://", "")
-      //       : resizedUri,
-      //   name: filename,
-      //   type,
-      // });
-
-      const response = await fetch("http://10.111.173.150:5001/analyze", {
+      const response = await fetch(url_plant, {
         method: "POST",
         body: formData,
         headers: {
@@ -162,8 +202,8 @@ export default function PicturePreview() {
       console.log("Server response:", data);
 
       navigation.navigate("ResultScreen", {
-        uri: uri, // original image URI
-        newPath: newPath, // local file path, if needed
+        uri: localUri,
+        // newPath: localUri,
         scientificName: data.scientific_name,
         isInvasive: data.invasive,
         confidence: data.confidence_percent,
@@ -173,48 +213,26 @@ export default function PicturePreview() {
       alert("Upload failed: " + error.message);
     }
   };
-
-// Plant.ID Server
-//   const uploadToServer = async (localUri) => {
-//   try {
-//     const filename = localUri.split("/").pop();
-//     const type = "image/jpeg";
-
-//     const formData = new FormData();
-//     formData.append("image", {
-//       uri:
-//         Platform.OS === "ios"
-//           ? localUri.replace("file://", "")
-//           : localUri,
-//       name: filename,
-//       type,
-//     });
-
-//     const response = await fetch(url_plant, {
-//       method: "POST",
-//       body: formData,
-//       headers: {
-//         "Content-Type": "multipart/form-data",
-//       },
-//     });
-
-//     const data = await response.json();
-//     console.log("Server response:", data);
-
-//     navigation.navigate("ResultScreen", {
-//       uri: localUri,
-//       newPath: localUri,
-//       scientificName: data.scientific_name,
-//       isInvasive: data.invasive,
-//       confidence: data.confidence_percent,
-//     });
-//   } catch (error) {
-//     console.error("Upload failed:", error);
-//     alert("Upload failed: " + error.message);
-//   }
-// };
-
-
+  if (loading) {
+    return (
+      <>
+        <StatusBar style="dark" />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#F2FFFF",
+          }}
+        >
+          <ActivityIndicator size="large" color="#00aa00" />
+          <Text style={{ marginTop: 10, fontSize: 16, fontWeight: "700" }}>
+            Identifying plant...
+          </Text>
+        </View>
+      </>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -249,7 +267,7 @@ export default function PicturePreview() {
                   <Text style={styles.buttonText}>Take Again</Text>
                 </Pressable>
                 <Pressable
-                  onPress={() => uploadToServer(newPath)}
+                  onPress={() => uploadToServer(uri)}
                   style={[styles.button, { backgroundColor: "#ffffff1A" }]}
                 >
                   <Text style={styles.buttonText}>Check Status</Text>
@@ -288,10 +306,10 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    paddingHorizontal: 16,
+    
     gap: 16,
   },
-  contentContainer: { flex: 1, gap: 32 },
+  contentContainer: { flex: 1, gap: 32, paddingHorizontal: 16, },
   imageContainer: {
     flex: 1,
     // backgroundColor: "#fff",

@@ -20,8 +20,12 @@ export default function ResultReport() {
   const uri = route?.params?.uri;
   const newPath = route?.params?.newPath;
   const scientificName = route?.params?.scientificName;
+  const isInvasive = route?.params?.isInvasive;
+  const confidence = route?.params?.confidence;
   const location = route?.params?.location;
   const date = route?.params?.date;
+
+  
 
   console.log(location);
   console.log(date);
@@ -55,7 +59,7 @@ export default function ResultReport() {
                   <Text style={styles.headerText}>Likely</Text>
                   <View style={styles.namePercentageContent}>
                     <Text style={styles.infoTextHeader}>{scientificName}</Text>
-                    <Text style={styles.percentageContent}>98%</Text>
+                    <Text style={styles.percentageContent}>{confidence}%</Text>
                   </View>
                 </View>
 
@@ -76,10 +80,10 @@ export default function ResultReport() {
             <View style={styles.botomContent}>
               <View style={styles.buttonContainer}>
                 <Pressable
-                  onPress={() => navigation.navigate("Home")}
+                  onPress={() => navigation.navigate("IdentifyMain")}
                   style={[styles.button, { backgroundColor: "transparent" }]}
                 >
-                  <Text style={styles.buttonText}>Go Home</Text>
+                  <Text style={styles.buttonText}>Cancel</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => console.log("Report Done")}
@@ -121,10 +125,10 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     gap: 16,
   },
-  contentContainer: { flex: 1, gap: 32 },
+  contentContainer: { flex: 1, gap: 32, paddingHorizontal: 16, },
   imageContainer: {
     flex: 1,
     alignItems: "center",

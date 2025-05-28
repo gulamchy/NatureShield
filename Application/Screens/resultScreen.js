@@ -29,6 +29,7 @@ export default function ResultScreen() {
   const [locationTimeInfo, setLocationTimeInfo] = useState(null);
   // const location = "";
   // const date = "";
+
   console.log(isInvasive);
   console.log(confidence);
   useEffect(() => {
@@ -102,6 +103,8 @@ export default function ResultScreen() {
                       uri: uri, // original image URI
                       newPath: newPath, // local file path, if needed
                       scientificName: scientificName, // adapt key name if different
+                      isInvasive: isInvasive,
+                      confidence: confidence,
                       location: locationTimeInfo?.locationName || "",
                       date: locationTimeInfo?.timestamp || "",
                     })
@@ -144,10 +147,10 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     gap: 16,
   },
-  contentContainer: { flex: 1, gap: 32 },
+  contentContainer: { flex: 1, gap: 32, paddingHorizontal: 16, },
   imageContainer: {
     flex: 1,
     alignItems: "center",

@@ -1,6 +1,7 @@
 // AuthContext.js
 import React, { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActivityIndicator, View } from "react-native";
 
 export const AuthContext = createContext();
 
@@ -9,13 +10,12 @@ export const AuthProvider = ({ children }) => {
   const [countClick, setCountClick] = useState(0);
 
   useEffect(() => {
-    let isMounted = true;
     const checkLoginStatus = async () => {
       try {
         const stored = await AsyncStorage.getItem("token");
         const storeCount = await AsyncStorage.getItem("countClick");
 
-        if (isMounted) {
+        if (stored) {
           setIsLoggedIn(!!stored);
           setCountClick(parseInt(storeCount, 10) || 0);
         }
@@ -25,14 +25,11 @@ export const AuthProvider = ({ children }) => {
       }
     };
     checkLoginStatus();
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   const login = async (token) => {
     await AsyncStorage.setItem("token", token);
-    await AsyncStorage.setItem("isLoggedIn", "true");
+    // await AsyncStorage.setItem("isLoggedIn", "true");
     setIsLoggedIn(true);
   };
 
@@ -48,6 +45,13 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(false);
   };
 
+  if (isLoggedIn === null) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#00aa00" />
+      </View>
+    );
+  }
   return (
     <AuthContext.Provider
       value={{ isLoggedIn, login, logout, countClick, clickCamera }}

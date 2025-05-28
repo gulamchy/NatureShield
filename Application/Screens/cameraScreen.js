@@ -94,10 +94,10 @@ export default function CameraScreen() {
         to: newPath,
       });
 
-      console.log("Saved to media library:", asset.uri);
-      console.log("Copied to local folder:", newPath);
+      // console.log("Saved to media library:", asset.uri);
+      // console.log("Copied to local folder:", newPath);
       // await uploadToServer(newPath);
-      navigation.navigate("PicturePreview", { uri: photo.uri, newPath: newPath });
+      navigation.navigate("PicturePreview", { uri: photo.uri });
       // On capture button press
       clickCamera();
     } catch (error) {
