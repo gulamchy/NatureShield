@@ -30,7 +30,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     );
 
     // Make a POST request to the Flask app for image analysis
-    const response = await axios.post("http://127.0.0.1:5000/analyze", form, {
+    const response = await axios.post("http://127.0.0.1:5001/analyze", form, {
       headers: form.getHeaders(),
     });
 
@@ -47,5 +47,5 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
 // Start the Node.js server
 app.listen(3000, () => {
-  console.log("Node.js app listening on http://localhost:3000");
+  console.log("Node.js app listening on http://localhost:8001");
 });

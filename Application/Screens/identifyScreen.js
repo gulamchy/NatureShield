@@ -1,5 +1,4 @@
 import CustomHeader from "../Components/customHeader";
-import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -9,7 +8,8 @@ import {
   Image,
   ActivityIndicator,
   SafeAreaView,
-  Button,
+  Pressable,
+  FlatList,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -18,6 +18,8 @@ import { Camera } from "expo-camera";
 import { shareAsync } from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+import { Ionicons } from "@expo/vector-icons";
 
 const Identify = (props) => {
   const [image, setImage] = useState(null);
@@ -46,7 +48,7 @@ const Identify = (props) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
-      <View>
+      <View style={{ flex: 1 }}>
         <CustomHeader
           title="Identify"
           icons={["warning", "information-circle"]}
@@ -56,11 +58,36 @@ const Identify = (props) => {
           }}
         />
 
-        <Button
-          title="Open Camera"
-          onPress={() => navigation.navigate("CameraScreen")}
-        />
-        <Button title="Pick Image" onPress={() => pickImage(navigation)} />
+        <View style={styles.buttonContainer}>
+          <Pressable
+            style={styles.buttonArea}
+            onPress={() => navigation.navigate("CameraScreen")}
+          >
+            <Ionicons name="camera" size={36} style={styles.icon} />
+            <Text style={styles.iconText}>Open Camera</Text>
+          </Pressable>
+          <Pressable
+            style={styles.buttonArea}
+            onPress={() => pickImage(navigation)}
+          >
+            <Ionicons name="image" size={36} style={styles.icon} />
+            <Text style={styles.iconText}>Open Gallery</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.instructionContainer}>
+          <Text style={styles.headerText}>Instructions</Text>
+          <FlatList
+            data={[
+              { key: "Image Size should be 10MB" },
+              { key: "Put the species in focus" },
+              { key: "Upload jpg or jpeg format only" },
+            ]}
+            renderItem={({ item }) => (
+              <Text style={styles.item}>{item.key}</Text>
+            )}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -73,25 +100,49 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#001A1A",
-    // justifyContent: "center",
-    // alignItems: "center",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
+  buttonContainer: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 16,
+    margin: 32,
   },
-  button: {
-    backgroundColor: "#3b82f6",
-    padding: 16,
-    borderRadius: 12,
-    marginVertical: 8,
-    width: "80%",
+  buttonArea: {
+    flex: 1,
+    backgroundColor: "#073232",
+    borderRadius: 16,
     alignItems: "center",
+    justifyContent: "center",
+    gap: 16,
   },
-  buttonText: {
-    color: "white",
+  icon: {
+    color: "#408080",
+  },
+  iconText: {
+    color: "#fff",
     fontWeight: "bold",
+    fontSize: 14,
+    // opacity: 0.7,
+  },
+  instructionContainer: {
+    flex: 3,
+    marginHorizontal: 32,
+  },
+  headerText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#fff",
+    opacity: 0.6,
+    textTransform: "uppercase",
+    lineHeight: 16,
+    marginBottom: 16,
+  },
+  item: {
+    // padding: 10,
     fontSize: 16,
+    height: 32,
+    color: "#fff",
+    opacity: 0.7,
   },
   resultContainer: {
     alignItems: "center",

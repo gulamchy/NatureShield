@@ -1,0 +1,532 @@
+const invasiveSpecies = [
+  {
+    "Name": "African Clawed Frog",
+    "Scientific Name": "Xenopus laevis",
+    "Image Address": "https://www.thesprucepets.com/thmb/Fhh8j8vnuyUKu9ikySCU6fZ18KY=/2116x0/filters:no_upscale():strip_icc()/76693276-56a2bce43df78cf7727960d2.jpg , https://i0.wp.com/newportbay.org/wp-content/uploads/2011/02/wildlife-amphibian-african-clawed-frog1.jpg?resize=456%2C177",
+    "Description": "Flattened bodies with smaller, wedge-shaped heads. Skin is smooth, olive to brown color with blotches or spots on the back and creamy white on the underside. Front feet are small and unwebbed, while hind feet are fully webbed with black claws on the three inner toes. Has no eyelids, tongue, or vocal sacs.",
+    "Information": "The African clawed frog is considered an invasive species due to its voracious appetite, ability to spread diseases, and its impact on native species. It's a highly adaptable and prolific species that can disrupt ecosystems by outcompeting and consuming native frogs and other aquatic life, and by carrying harmful diseases like chytridiomycosis.",
+    "Warnings": "CAUTION: Do thorough hand washing after contact with skin."
+  },
+  {
+    "Name": "American Bullfrog",
+    "Scientific Name": "Lithobates catesbeianus",
+    "Image Address": "https://wildlifeleadershipacademy.org/wp-content/uploads/2019/06/blog-photo-template-01-2-1431x1200.jpg, https://www.herpingva.org/uploads/1/3/8/6/138626214/img-5578_orig.jpg",
+    "Description": "Large, heavy-bodied frog with smooth skin, often brown or green with dark spots or mottling on the back. Their belly is typically white or creamy with dark mottling. A key distinguishing feature is a skin fold (supratympanic fold) that extends from the eye, around the eardrum, and towards the shoulder.",
+    "Information": "As a result of their feeding behaviors, all lifestages of bullfrogs prey upon and are able to out-compete native frogs and other aquatic species.  Additionally, bullfrogs are a known carrier of chytrid fungus, which causes the potentially fatal skin disease in frogs called chytridiomycosis.  Chytridomycosis is believed to be a leading cause of the decline of native amphibian populations all over the world and responsible for the extinction of over 100 species since the 1970s.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Apple Maggot",
+    "Scientific Name": "Rhagoletis pomonella",
+    "Image Address": "https://s3.us-west-2.amazonaws.com/treefruit.wsu.edu/wp-content/uploads/2021/04/19102541/OPM_applemaggot02.jpg , https://s3.us-west-2.amazonaws.com/treefruit.wsu.edu/wp-content/uploads/2021/04/19102539/OPM_applemaggot01.jpg",
+    "Description": "The adult fly is about 1/5 inch long, black with white stripes on its abdomen, and has distinctive black markings on its clear wings, often shaped like an \"F\". The larval stage, or maggot, is a white, legless larva that tunnels through the apple flesh.",
+    "Information": "Exotic apple fruit pests can damage trees and shrubs, and pose a serious threat to Washington’s fruit crops and commercial fruit industries. Apple maggots directly attack fruits such as apples, cranberries, cherries, pears, plums, and apricots, making them brown, mushy, and inedible. Exotic apple fruit pests also may attack other fruit trees, ornamentals, and other desirable plants.",
+    "Warnings": "CAUTION: Will be at risk of food posinousing if maggots have been injested though contaminated fruit."
+  },
+  {
+    "Name": "Brazilian Elodea",
+    "Scientific Name": "Egeria densa",
+    "Image Address": "https://www.nwcb.wa.gov/images/weeds/brazilian-elodea/_fullsize/3155/Black-Lk.jpg , https://www.wnyprism.org/wp-content/uploads/2022/12/Brazilian-Elodea-Infestation.webp",
+    "Description": "A submersed aquatic plant that can be rooted or free floating. This green plant has a bottle-brush appearance and can grow nine to 15 feet tall. Upon reaching the surface of the water, the leafy branches create dense mats.",
+    "Information": "Brazilian elodea, an aquatic plant, is considered invasive because it forms dense mats that crowd out native plants, restrict water movement, and negatively impact recreational activities and aquatic ecosystems. These mats can also impact fish habitat, disrupt sediment flow, and impede boat movement.",
+    "Warnings": "CAUTION: While not inherently harmful, accidental ingestion may cause nausea or vomiting."
+  },
+  {
+    "Name": "Brown Marmorated Stink Bug",
+    "Scientific Name": "Halyomorpha halys",
+    "Image Address": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Pentatomidae_-_Halyomorpha_halys-001.JPG/500px-Pentatomidae_-_Halyomorpha_halys-001.JPG , https://www.stopbmsb.org/stopBMSB/assets/Image/BMSB_Figure2_0573.jpg",
+    "Description": "Shield-shaped, mottled brown insects with a distinct pattern of alternating light and dark bands on their antennae and abdomen. They are approximately 14-17 mm long (0.5-0.75 inches). Nymphs, or immature stages, are more colorful and have red and orange markings.",
+    "Information": "The presence of this stink bug is concerning for farmers because it feeds on a large number of high-value crops and ornamental plants in its immature and adult life stages. It has a high reproductive rate, a lack of natural predators in its new areas, and can easily be spread by human transportation.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Butterfly Bush",
+    "Scientific Name": "Buddleja davidii",
+    "Image Address": "https://gilberthwild.com/cdn/shop/files/Shrub-Grand-Cascade-600.jpg?v=1720805505&width=576 , https://shop.pikenursery.com/cdn/shop/products/buddleja-davidii__24428.1681991271.1280.1280.jpg?v=1707930749&width=480",
+    "Description": "A deciduous shrub with arching branches that can reach a height of 15 feet. The flowers come in a variety of colors, including purple, pink, lilac, white, and sometimes yellow or orange. The leaves and stems are typically hairy and are often green or blue-gray above and whitish on the underside. Leaf stalks are short and hairy, although the leaves sometimes are attached directly to the stem.",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Caulerpa Seaweed",
+    "Scientific Name": "Caulerpa taxifolia",
+    "Image Address": "https://invasivespecies.wa.gov/wp-content/uploads/2019/07/Caulerpa-2-1568x1534.jpg , https://invasivespecies.wa.gov/wp-content/uploads/2019/07/Caulerpa-4-768x1024.jpg",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Chinese Mitten Crab",
+    "Scientific Name": "Eriocheir sinensis",
+    "Image Address": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/EriocheirSinensis1.jpg/500px-EriocheirSinensis1.jpg , https://en.vmm.be/news/archive/invasive-chinese-mitten-crabs-new-project-launched-to-preserve-native-ecosystems/@@images/146ee189-975a-4080-89c6-265ce12c7913.jpeg",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Citrus Longhorned Beetle",
+    "Scientific Name": "Anoplophora chinensis",
+    "Image Address": "https://www.cdfa.ca.gov/citrus/images/clb.jpg , https://inspection.canada.ca/sites/default/files/legacy/DAM/DAM-plants-vegetaux/STAGING/images-images/pestrava_anochi_factsheet_image1small_1326123599634_eng.jpg",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Asian Longhorned Beetle",
+    "Scientific Name": "Anoplophora glabripennis",
+    "Image Address": "https://i0.wp.com/entomologytoday.org/wp-content/uploads/2024/07/asian-longhorned-beetle-anoplophora-glabripennis.jpg?w=920&ssl=1 , https://www.vtinvasives.org/sites/default/files/styles/news_image_wide/public/2016-11/Asian_long-horned_beetle_-_Kyle_Ramirez_web.jpg?h=d784045a&itok=xtHdko4b",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Red-necked Longhorned Beetle",
+    "Scientific Name": "Aromia bungii",
+    "Image Address": "https://www.cabidigitallibrary.org/cms/10.1079/cabicompendium.118984/asset/fbd1c378-eda7-4776-956e-5bce11974d0e/assets/graphic/118984_02.jpg , https://www.cabidigitallibrary.org/cms/10.1079/cabicompendium.118984/asset/29cdafd7-c1b5-48b3-bad0-a5eb4bd3e5ef/assets/graphic/118984_01.jpg",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Common Crupina",
+    "Scientific Name": "Crupina vulgaris",
+    "Image Address": "https://invasivespecies.wa.gov/wp-content/uploads/2019/07/CommonCrupina-Flower-1-768x597.jpg , https://inspection.canada.ca/sites/default/files/legacy/DAM/DAM-plants-vegetaux/STAGING/images-images/invasive_plants_factsheet_crupinaa_1331668255237_eng.jpg",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Common Reed",
+    "Scientific Name": "Phragmites australis",
+    "Image Address": "https://www.invasivespeciesinfo.gov/sites/default/files/styles/extra_large/public/media/image/common-reed-5487177.jpg?itok=WqmUPyX1 , https://columbusaudubon.org/wp-content/uploads/reedgrassODNR.jpg?x93737",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Emerald Ash Borer",
+    "Scientific Name": "Agrilus planipennis",
+    "Image Address": "https://www.minnetonkamn.gov/home/showpublishedimage/1195/637062221774270000 , https://www.invasivespeciescentre.ca/wp-content/uploads/2022/05/XX-Emerald-ash-borer_Optimized.jpg",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Eurasian Watermilfoil",
+    "Scientific Name": "Myriophyllum spicatum",
+    "Image Address": "https://cdn.forumcomm.com/dims4/default/d1d5b87/2147483647/strip/true/crop/1700x1133+0+0/resize/1680x1120!/format/webp/quality/90/?url=https%3A%2F%2Ffcc-cue-exports-brightspot.s3.us-west-2.amazonaws.com%2Fechopress%2Fbinary%2Fcopy%2F81%2F39%2F69e427a1ee295f84555566d68df5%2F3519210-0b19d-4vnjobwy2xfztf1dhlfugc-binary-3916756.jpg , https://www.vtinvasives.org/sites/default/files/styles/invasives_flexslider_wide/public/images/invasives/Eurasian-Watermilfoil-UW-290.jpg?itok=AhjAFflT",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "European Chafer",
+    "Scientific Name": "Amphimallon majale",
+    "Image Address": "https://inaturalist-open-data.s3.amazonaws.com/photos/469024373/medium.jpeg , https://www.canr.msu.edu/contentAsset/image/c6f6a7e6-68cc-417e-93fb-a1ffaac33b6f/fileAsset/filter/Resize/resize_w/500",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "European Green Crab",
+    "Scientific Name": "Carcinus maenas",
+    "Image Address": "https://images.squarespace-cdn.com/content/v1/532897cce4b0ba32c2428ce3/fb0c230e-2697-4d68-9587-778d340e2ee0/greencrab.jpeg?format=2500w , https://interpretivecenter.org/wp-content/uploads/2021/05/GreenCrabMolt_19May22aupdated.jpg",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Feral Swine",
+    "Scientific Name": "Sus scrofa",
+    "Image Address": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Wild_Pig_KSC02pd0873.jpg/500px-Wild_Pig_KSC02pd0873.jpg , https://hakaimagazine.com/wp-content/uploads/standing-feral-pigs-in-hawaii-2048x1366.jpg",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Flowering Rush",
+    "Scientific Name": "Butomus umbellatus",
+    "Image Address": "https://www.lakerestoration.com/wp-content/uploads/2024/03/control-flowering-rush.jpg , https://www.nwcb.wa.gov/images/weeds/flowering-rush/_thumbnail/floweringrush17.jpg",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Garlic Mustard",
+    "Scientific Name": "Alliaria petiolata",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Hydrilla",
+    "Scientific Name": "Hydrilla verticillata",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Japanese Beetle",
+    "Scientific Name": "Popillia japonica",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Japanese Knotweed",
+    "Scientific Name": "Fallopia japonica",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Spotted Knapweeds",
+    "Scientific Name": "",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Kudzu",
+    "Scientific Name": "Pueraria montana",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Leafy Spurge",
+    "Scientific Name": "Euphorbia esula",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "New Zealand Mud Snail",
+    "Scientific Name": "Potamopyrgus antipodarum",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Northern Giant Hornet",
+    "Scientific Name": "Vespa mandarinia",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Northern Pike",
+    "Scientific Name": "Esox lucius",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Northern Snakehead",
+    "Scientific Name": "Channa argus",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Nutria",
+    "Scientific Name": "Myocastor coypus",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Onion Leaf Miner",
+    "Scientific Name": "Phytomyza gymnostoma",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Parrotfeather",
+    "Scientific Name": "Myriophyllum aquaticum",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Poison Hemlock",
+    "Scientific Name": "Conium maculatum",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Puncturevine",
+    "Scientific Name": "Tribulus terrestris",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Purple Loosestrife",
+    "Scientific Name": "Lythrum salicaria",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Rush Skeletonweed",
+    "Scientific Name": "Chondrilla juncea",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Saltcedar",
+    "Scientific Name": "Tamarix ramosissima",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Scarlet Lily Beetle",
+    "Scientific Name": "Lilioceris lilii",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Scotch Broom",
+    "Scientific Name": "Cytisus scoparius",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Scotch Thistle",
+    "Scientific Name": "Onopordum acanthium",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Sirex Woodwasp",
+    "Scientific Name": "Sirex noctilio",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Spartina (Cordgrass)",
+    "Scientific Name": "Spartina alterniflora",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Spongy Moth",
+    "Scientific Name": "Lymantria dispar",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Spotted Lanternfly",
+    "Scientific Name": "Lycorma delicatula",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Spotted Wing Drosophila",
+    "Scientific Name": "Drosophila suzukii",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Starry Stonewort",
+    "Scientific Name": "Nitellopsis obtusa",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Variable-leaf Milfoil",
+    "Scientific Name": "Myriophyllum heterophyllum",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Vineyard Snail",
+    "Scientific Name": "Cernuella virgata",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Viral Hemorrhagic Septicemia Virus",
+    "Scientific Name": "Piscine novirhabdovirus",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "White-nose Syndrome",
+    "Scientific Name": "Pseudogymnoascus destructans",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Yellow Starthistle",
+    "Scientific Name": "Centaurea solstitialis",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Zebra Mussel",
+    "Scientific Name": "Dreissena polymorpha",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Quagga Mussel",
+    "Scientific Name": "Dreissena rostriformis bugensis",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Bighead Carp",
+    "Scientific Name": "Hypophthalmichthys nobilis",
+    "Image Address": "",
+    "Description": "",
+    "Information": "",
+    "Warnings": ""
+  },
+  {
+    "Name": "Black Carp",
+    "Scientific Name": "Mylopharyngodon piceus",
+    "Image Address": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Mylopharyngodon_piceus.jpg , https://nas.er.usgs.gov/XIMAGESERVERX/2022/20220908143828.jpg",
+    "Description": "A large freshwater fish with dark gray to black coloring, elongated body, and large scales. It resembles other carp species but is distinguishable by its darker hue and more cylindrical body. Typically grows up to 1.5 meters in length.",
+    "Information": "Black carp are invasive \"molluscivores\" that threaten native mussel and snail populations. Introduced for parasite control in aquaculture, they escaped into wild waterways and now pose a risk to native aquatic biodiversity.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Grass Carp",
+    "Scientific Name": "Ctenopharyngodon idella",
+    "Image Address": "https://thesuntimesnews.com/wp-content/uploads/2025/05/Grass-carp-by-Wrangel.jpg , https://badangling.com/wp-content/uploads/2018/06/grass-carp-held.jpg",
+    "Description": "Large, torpedo-shaped fish with broad scales and a silvery-gray-green coloration.",
+    "Information": "Introduced to control aquatic vegetation, grass carp can overconsume plant life, leading to habitat degradation and the displacement of native species. Recently they've become an issue in the Great Lakes region of the United States",
+    "Warnings": ""
+  },
+  {
+    "Name": "Silver Carp",
+    "Scientific Name": "Hypophthalmichthys molitrix",
+    "Image Address": "https://www.outdooralabama.com/sites/default/files/Rainer%20articles/silver%20carp%20jumping%201.jpg , https://nas.er.usgs.gov/XIMAGESERVERX/2005/20051103111001.jpg",
+    "Description": "Medium to large-sized freshwater fish with a silvery body and upturned mouth. Known for their tendency to leap out of the water when disturbed.",
+    "Information": "Silver carp are filter feeders introduced to control plankton in aquaculture. They compete with native filter-feeders and overconsume.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Northern Crayfish",
+    "Scientific Name": "Faxonius virilis",
+    "Image Address": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPdyomXEcWOVLanS7B2P-cuHdSwuPZb3B6qQ&s , https://lh5.googleusercontent.com/proxy/ZrTUDqBqtxwWea0PqpeC_DZFwYA42WC5mfTDX6cxV5cKcS0YkOvCghI7CK2Gbun5tY0qWRArlbopbe9aZ4GF1j8Uhj5dDTH41taeO-hKJ0culkJfwiPA",
+    "Description": "Olive-brown body with large pincers and a smooth carapace. May show faint dark bands across the abdomen.",
+    "Information": "The Northern crayfish is native to parts of North America but considered invasive elsewhere in the south. It displaces native crayfish, alters habitats, and consumes native aquatic plants and invertebrates.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Red Swamp Crayfish",
+    "Scientific Name": "Procambarus clarkii",
+    "Image Address": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZQqryiPABhF-j2SwGOVGxx2zt0UaA03N2Yw&s , https://www.wnyprism.org/wp-content/uploads/2023/11/Red-Swamp-3.jpg",
+    "Description": "This crayfish is dark red with raised bright red spots covering the body and claws, and a black wedge-shaped stripe on the top of the abdomen. It can grow up to 5 inches long.",
+    "Information": "Red swamp crayfish are aggressive, burrow extensively (damaging levees and banks), and outcompete native species. They can survive harsh conditions and are tolerant of pollution.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Rusty Crayfish",
+    "Scientific Name": "Faxonius rusticus",
+    "Image Address": "https://nas.er.usgs.gov/XIMAGESERVERX/2018/20180409110033.jpg, https://www.chesapeakebay.net/files/field-guide/rusty-crayfish/_670xAUTO_crop_center-center_none/rustycrayfishfieldguide_thumb-01.jpg",
+    "Description": "Rusty crayfish are light to dark brown with a pair of rust-colored spots on either side of the carapace (main body). They have large, robust claws with black bands at the tips and can grow up to 5 inches long.",
+    "Information": "Rusty crayfish have spread to various U.S. states and Canadian provinces. They are aggressive, outcompete native crayfish, and damage aquatic vegetation, impacting fish habitats.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Purple Varnish Clam",
+    "Scientific Name": "Nuttallia obscurata",
+    "Image Address": "https://culinariaeugenius.wordpress.com/wp-content/uploads/2008/03/dscf6860.jpghttps://upload.wikimedia.org/wikipedia/commons/4/45/Nuttallia_obscurata_%28exterior%29.jpg,",
+    "Description": "A small bivalve clam with a smooth, shiny, purple to brownish-purple shell; interior is white. Grows up to 6 cm.",
+    "Information": "Native to Asia, it was discovered in Washington in 1991 and has since spread along the Pacific Northwest. It reproduces rapidly, dominating intertidal zones and potentially impacting native bivalve populations.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Overbite Clam",
+    "Scientific Name": "Potamocorbula/Corbula amurensis",
+    "Image Address": "https://www.exoticsguide.org/sites/default/files/species_images/c_amurensis_lg_f.jpg, https://www.iucngisd.org/gisd/image/ecology/dia_clam.jpg",
+    "Description": "Small, oval bivalve with a translucent tan to light brown shell; slightly asymmetric with a noticeable \"overbite.",
+    "Information": "Native to Asia, it has become invasive in estuarine environments, competing with native species and altering food webs by consuming large amounts of plankton.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Clubbed Tunicate",
+    "Scientific Name": "Styela clava",
+    "Image Address": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3WvQ9upcH20ZoQEekirLew7rLyxX2LjoESg&s ,  https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZvJJORQ5M2B3HWMr6dsz9VXik_NG0qwNJ6g&s",
+    "Description": "Tunicate with a leathery, cylindrical body narrowing to a stalk; colors range from yellowish to reddish-brown.",
+    "Information": "Originating from the Western Pacific, it is considered one of the worst invasive alien species, outcompeting native filter feeders and fouling marine equipment.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Transparent Tunicate",
+    "Scientific Name": "Ciona savignyi",
+    "Image Address": "https://images.squarespace-cdn.com/content/v1/5fcad9a0e504e82ec5986320/1608773925183-N2JOXX8QNF8MARL3TI3D/Dive-Team-transparent-tunicate.jpg ,  https://media.istockphoto.com/id/172650216/photo/transparent-tunicate.jpg?s=1024x1024&w=is&k=20&c=bjWJRZqNKW6S1uIICokNVxxlnfUF8acsbBAx2z_yfSc=",
+    "Description": "Delicate, gelatinous, almost invisible colonial tunicate forming sheet-like or chain-like structures in the water.",
+    "Information": "Originating in Asia, this species rapidly colonizes surfaces, disrupting local plankton dynamics and outcompeting native species essentaly smothering them.",
+    "Warnings": ""
+  },
+  {
+    "Name": "Sea Vomit Tunicate",
+    "Scientific Name": "Didemnum vexillum",
+    "Image Address": "https://cmbc.ucsd.edu/wp-content/uploads/sites/399/2018/05/Screen-Shot-2018-05-29-at-3.00.17-PM-300x206.png, https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2IutCRUFPy_cxTqKYhRZDSDfPOf9pz2Pxtw&s",
+    "Description": "Colonial tunicate forming large, slimy, orange to brown gelatinous masses; resembles vomit in appearance.",
+    "Information": "Highly invasive, it grows over and smothers benthic habitats, spreading via boats, fishing gear, and aquaculture equipment. It exudes a toxic substance which discourages predators and prevents the larvae of other species from settling on it.",
+    "Warnings": ""
+  }
+];
+
+export default invasiveSpecies;
