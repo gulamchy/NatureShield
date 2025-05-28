@@ -15,10 +15,8 @@ export const AuthProvider = ({ children }) => {
         const stored = await AsyncStorage.getItem("token");
         const storeCount = await AsyncStorage.getItem("countClick");
 
-        if (stored) {
-          setIsLoggedIn(!!stored);
-          setCountClick(parseInt(storeCount, 10) || 0);
-        }
+        setIsLoggedIn(!!stored);
+        setCountClick(parseInt(storeCount, 10) || 0);
       } catch (error) {
         console.error("Error checking login status:", error);
         setIsLoggedIn(false);
