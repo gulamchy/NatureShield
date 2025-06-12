@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import CustomHeader from "../Components/customHeader";
 import { useNavigation } from "@react-navigation/native";
@@ -6,6 +6,10 @@ import HorizontalSection from "../Components/horizontalSection";
 import { StatusBar } from "expo-status-bar";
 import { AuthContext } from "../authContext";
 import IconButton from "../Components/iconButton";
+import invasiveSpecies from "../species.json";
+import InAppBrowser from 'react-native-inappbrowser-reborn';
+import * as WebBrowser from 'expo-web-browser';
+
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 // import { LinearGradient } from "expo-linear-gradient";
@@ -14,39 +18,65 @@ const Home = (props) => {
   const navigation = useNavigation();
   const { clickCamera, countClick } = useContext(AuthContext);
 
-  const sampleItems = [
-    {
-      image:
-        "https://woodlandessence.com/cdn/shop/products/JapaneseKnotweed2-IS-website_1400x.jpg?v=1573522162",
-      label: "Japanese Knotweed",
-    },
-    {
-      image:
-        "https://www.gardenia.net/wp-content/uploads/2023/05/Wisteria-Sinensis-Chinese-Wisteria.webp",
-      label: "Chinese wisteria",
-    },
-    {
-      image:
-        "https://newfs.s3.amazonaws.com/taxon-images-239x239/Rosaceae/rosa-multiflora-fl-ahaines-b.jpg",
-      label: "Multiflora rose",
-    },
-  ];
+  const selectedSpecies = useMemo(() => {
+    if (!invasiveSpecies || invasiveSpecies.length < 3) return invasiveSpecies;
+
+    const shuffled = [...invasiveSpecies].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 3).map((item) => ({
+      ...item,
+      image: item.WikiImage,
+      label: item.CommonName,
+    }));
+  }, [invasiveSpecies]);
+
+//   const openLink = async (url) => {
+//   try {
+//     if (await InAppBrowser.isAvailable()) {
+//       await InAppBrowser.open(url, {
+//         // optional customization
+//         // tabBarActiveTintColor: "#408080",
+//         // tabBarInactiveTintColor: "#99B2B2",
+//         dismissButtonStyle: 'cancel',
+//         preferredBarTintColor: '#001A1A',
+//         preferredControlTintColor: 'white',
+//         readerMode: false,
+//         animated: true,
+//         modalPresentationStyle: 'fullScreen',
+//         modalEnabled: true,
+//         enableBarCollapsing: true,
+//       });
+//     } else {
+//       // fallback to default browser
+//       Linking.openURL(url);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+
+const openLink = async (url) => {
+  const result = await WebBrowser.openBrowserAsync(url);
+};
+
 
   const sampleOrg = [
     {
       image:
         "https://res.cloudinary.com/dd7rhunty/image/upload/v1748297375/NAISMA_yap0ry.png",
       label: "NAISMA",
+      url: "https://naisma.org",
     },
     {
       image:
         "https://res.cloudinary.com/dd7rhunty/image/upload/v1748297333/NAISN_x9goog.png",
       label: "NAISN",
+      url: "https://www.naisn.org",
     },
     {
       image:
         "https://res.cloudinary.com/dd7rhunty/image/upload/v1748297333/NPS_jydihj.png",
       label: "NPS",
+      url: "https://www.nps.gov/index.htm"
     },
   ];
 
@@ -57,10 +87,10 @@ const Home = (props) => {
         <CustomHeader
           title="NatureShield"
           // subtitle="Welcome back"
-          icons={["search", "notifications"]}
+          icons={["", ""]}
           onIconPress={{
-            search: () => alert("Search Pressed"),
-            notifications: () => alert("Notifications Pressed"),
+            // search: () => alert("Search Pressed"),
+            // notifications: () => alert("Notifications Pressed"),
           }}
         />
         <View style={styles.mainContent}>
@@ -87,28 +117,45 @@ const Home = (props) => {
               <IconButton
                 label="Donate"
                 iconName="card-outline"
-                onPress={() => alert("Donate Pressed")}
+                onPress={() => openLink("https://coff.ee/natureshield")}
               />
               <IconButton
                 label="More"
                 iconName="ellipsis-vertical"
-                onPress={() => alert("More Pressed")}
+                onPress={() => navigation.navigate("More")}
               />
             </View>
           </View>
 
           <View style={styles.additionalContent}>
+
             <HorizontalSection
               title="Species"
-              items={sampleItems}
+              items={selectedSpecies}
               onViewPress={() => navigation.navigate("Species")}
-              onItemPress={(item) => alert(`Pressed on ${item.label}`)}
+              onItemPress={(item) =>
+                navigation.navigate("Species", {
+                  screen: "SpeciesIndividual",
+                  params: {
+                    CommonName: item.CommonName,
+                    ScientificName: item.ScientificName,
+                    Durations: item.Durations,
+                    GrowthHabits: item.GrowthHabits,
+                    OtherCommonNames: item.OtherCommonNames,
+                    Description: item.WikiDescription,
+                    image: item.image,
+                    NativeStatus: JSON.parse(
+                      "[" + item.NativeStatuses.replace(/'/g, '"') + "]"
+                    )[0]?.Type,
+                  },
+                })
+              }
             />
 
             <HorizontalSection
               title="Organizations"
               items={sampleOrg}
-              onItemPress={(item) => alert(`Pressed on ${item.label}`)}
+              onItemPress={(item) => openLink(item.url)}
               viewVisibility={false}
             />
           </View>
@@ -133,6 +180,8 @@ const styles = StyleSheet.create({
   headerText: {
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 16,
+    // backgroundColor: "#fff"
   },
   subTitleView: {
     flexDirection: "row",
@@ -158,6 +207,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     paddingVertical: 16,
     alignItems: "center",
+    paddingBottom: 32,
   },
   additionalContent: {
     flex: 1,

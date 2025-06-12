@@ -1,4 +1,3 @@
-// Components/PicturePreview.js
 import {
   View,
   Text,
@@ -29,154 +28,8 @@ export default function PicturePreview() {
 
   const route = useRoute();
   const uri = route?.params?.uri;
-  // const newPath = route?.params?.newPath;
   const url_plant = `http://${backendIp}:${backendPort}/analyze`;
 
-  // const uploadToServer = async (localUri) => {
-  //   try {
-  //     const filename = localUri.split("/").pop();
-  //     const type = "image/jpeg"; // or use mime.lookup(filename)
-
-  //     const formData = new FormData();
-  //     formData.append("image", {
-  //       uri: localUri,
-  //       name: filename,
-  //       type,
-  //     });
-  //     formData.append("category", "plants"); // hardcoded category
-  //     // ${process.env.EXPO_PUBLIC_BACKEND_IP}:
-  //     const response = await fetch("http://10.111.173.150:5001/analyze", {
-  //       method: "POST",
-  //       body: formData,
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-
-  //     const data = await response.json();
-
-  //     console.log("Server response:", data);
-  //     navigation.navigate("ResultScreen", {
-  //       uri: uri, // original image URI
-  //       newPath: newPath, // local file path, if needed
-  //       scientificName: data.scientific_name, // adapt key name if different
-  //     });
-  //   } catch (error) {
-  //     console.error("Upload failed:", error);
-  //     alert("Failed to upload: " + error.message);
-  //   }
-  // };
-
-  // const uploadToServer = async (localUri) => {
-  //   try {
-  //     const filename = localUri.split("/").pop();
-  //     const type = "image/jpeg"; // You can use 'mime' package for dynamic detection if needed
-
-  //     const formData = new FormData();
-  //     formData.append("image", {
-  //       uri: localUri,
-  //       name: filename,
-  //       type,
-  //     });
-
-  //     const response = await fetch("http://10.111.173.150:5001/analyze", {
-  //       method: "POST",
-  //       body: formData,
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-
-  //     const data = await response.json();
-  //     console.log("Server response:", data);
-
-  //     navigation.navigate("ResultScreen", {
-  //       uri: uri,
-  //       newPath: newPath,
-  //       scientificName: data.scientific_name,
-  //       isInvasive: data.invasive,
-  //     });
-  //   } catch (error) {
-  //     console.error("Upload failed:", error);
-  //     alert("Upload failed: " + error.message);
-  //   }
-  // };
-
-  // Google Cloud Vision Server
-
-  // const uploadToServer = async (localUri) => {
-  //   try {
-  //     // Step 1: Get image dimensions to check width
-  //     // const { width, height } = await new Promise((resolve, reject) => {
-  //     //   // react-native built-in method
-  //     //   RNImage.getSize(
-  //     //     localUri,
-  //     //     (w, h) => resolve({ width: w, height: h }),
-  //     //     (error) => reject(error)
-  //     //   );
-  //     // });
-
-  //     // let resizedUri = localUri;
-
-  //     // Step 2: Resize if width > 500 px, keep aspect ratio
-  //     // if (width > 500) {
-  //     //   const newHeight = Math.floor((500 * height) / width);
-
-  //     //   const resizedResult = await ImageManipulator.manipulateAsync(
-  //     //     localUri,
-  //     //     [{ resize: { width: 500, height: newHeight } }],
-  //     //     { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
-  //     //   );
-  //     //   resizedUri = resizedResult.uri;
-  //     // }
-  //     const filename = localUri.split("/").pop();
-  //     const type = "image/jpeg"; // or use mime.lookup(filename)
-
-  //     const formData = new FormData();
-  //     formData.append("image", {
-  //       uri: localUri,
-  //       name: filename,
-  //       type,
-  //     });
-
-  //     // const filename = resizedUri.split("/").pop();
-  //     // const type = "image/jpeg";
-
-  //     // const formData = new FormData();
-  //     // formData.append("image", {
-  //     //   uri:
-  //     //     Platform.OS === "ios"
-  //     //       ? resizedUri.replace("file://", "")
-  //     //       : resizedUri,
-  //     //   name: filename,
-  //     //   type,
-  //     // });
-
-  //     const response = await fetch("http://10.111.173.150:5001/analyze", {
-  //       method: "POST",
-  //       body: formData,
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-
-  //     const data = await response.json();
-  //     console.log("Server response:", data);
-
-  //     navigation.navigate("ResultScreen", {
-  //       uri: uri, // original image URI
-  //       newPath: newPath, // local file path, if needed
-  //       scientificName: data.scientific_name,
-  //       isInvasive: data.invasive,
-  //       confidence: data.confidence_percent,
-  //     });
-  //   } catch (error) {
-  //     console.error("Upload failed:", error);
-  //     alert("Upload failed: " + error.message);
-  //   }
-  // };
-
-  // Plant.ID Server
   const uploadToServer = async (localUri) => {
     try {
       setLoading(true);
@@ -199,7 +52,7 @@ export default function PicturePreview() {
       });
 
       const data = await response.json();
-      console.log("Server response:", data);
+      // console.log("Server response:", data);
 
       navigation.navigate("ResultScreen", {
         uri: localUri,
@@ -379,3 +232,158 @@ const styles = StyleSheet.create({
     padding: 4,
   },
 });
+
+
+// ==========================================================
+// ==========================================================
+
+// Useful Identification API's Server - Did not end up using
+
+// ==========================================================
+// ==========================================================
+
+  // const uploadToServer = async (localUri) => {
+  //   try {
+  //     const filename = localUri.split("/").pop();
+  //     const type = "image/jpeg"; // or use mime.lookup(filename)
+
+  //     const formData = new FormData();
+  //     formData.append("image", {
+  //       uri: localUri,
+  //       name: filename,
+  //       type,
+  //     });
+  //     formData.append("category", "plants"); // hardcoded category
+  //     // ${process.env.EXPO_PUBLIC_BACKEND_IP}:
+  //     const response = await fetch("http://10.111.173.150:5001/analyze", {
+  //       method: "POST",
+  //       body: formData,
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     const data = await response.json();
+
+  //     console.log("Server response:", data);
+  //     navigation.navigate("ResultScreen", {
+  //       uri: uri, // original image URI
+  //       newPath: newPath, // local file path, if needed
+  //       scientificName: data.scientific_name, // adapt key name if different
+  //     });
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //     alert("Failed to upload: " + error.message);
+  //   }
+  // };
+
+  // const uploadToServer = async (localUri) => {
+  //   try {
+  //     const filename = localUri.split("/").pop();
+  //     const type = "image/jpeg"; // You can use 'mime' package for dynamic detection if needed
+
+  //     const formData = new FormData();
+  //     formData.append("image", {
+  //       uri: localUri,
+  //       name: filename,
+  //       type,
+  //     });
+
+  //     const response = await fetch("http://10.111.173.150:5001/analyze", {
+  //       method: "POST",
+  //       body: formData,
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     const data = await response.json();
+  //     console.log("Server response:", data);
+
+  //     navigation.navigate("ResultScreen", {
+  //       uri: uri,
+  //       newPath: newPath,
+  //       scientificName: data.scientific_name,
+  //       isInvasive: data.invasive,
+  //     });
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //     alert("Upload failed: " + error.message);
+  //   }
+  // };
+
+  // Google Cloud Vision Server
+
+  // const uploadToServer = async (localUri) => {
+  //   try {
+  //     // Step 1: Get image dimensions to check width
+  //     // const { width, height } = await new Promise((resolve, reject) => {
+  //     //   // react-native built-in method
+  //     //   RNImage.getSize(
+  //     //     localUri,
+  //     //     (w, h) => resolve({ width: w, height: h }),
+  //     //     (error) => reject(error)
+  //     //   );
+  //     // });
+
+  //     // let resizedUri = localUri;
+
+  //     // Step 2: Resize if width > 500 px, keep aspect ratio
+  //     // if (width > 500) {
+  //     //   const newHeight = Math.floor((500 * height) / width);
+
+  //     //   const resizedResult = await ImageManipulator.manipulateAsync(
+  //     //     localUri,
+  //     //     [{ resize: { width: 500, height: newHeight } }],
+  //     //     { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+  //     //   );
+  //     //   resizedUri = resizedResult.uri;
+  //     // }
+  //     const filename = localUri.split("/").pop();
+  //     const type = "image/jpeg"; // or use mime.lookup(filename)
+
+  //     const formData = new FormData();
+  //     formData.append("image", {
+  //       uri: localUri,
+  //       name: filename,
+  //       type,
+  //     });
+
+  //     // const filename = resizedUri.split("/").pop();
+  //     // const type = "image/jpeg";
+
+  //     // const formData = new FormData();
+  //     // formData.append("image", {
+  //     //   uri:
+  //     //     Platform.OS === "ios"
+  //     //       ? resizedUri.replace("file://", "")
+  //     //       : resizedUri,
+  //     //   name: filename,
+  //     //   type,
+  //     // });
+
+  //     const response = await fetch("http://10.111.173.150:5001/analyze", {
+  //       method: "POST",
+  //       body: formData,
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     const data = await response.json();
+  //     console.log("Server response:", data);
+
+  //     navigation.navigate("ResultScreen", {
+  //       uri: uri, // original image URI
+  //       newPath: newPath, // local file path, if needed
+  //       scientificName: data.scientific_name,
+  //       isInvasive: data.invasive,
+  //       confidence: data.confidence_percent,
+  //     });
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //     alert("Upload failed: " + error.message);
+  //   }
+  // };
+
+  // Plant.ID Server

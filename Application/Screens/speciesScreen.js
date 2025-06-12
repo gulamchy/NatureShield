@@ -1,76 +1,4 @@
-// import React from "react";
-// import { View, Text, StyleSheet, SafeAreaView } from "react-native";
-// import CustomHeader from "../Components/customHeader";
-// import { StatusBar } from "expo-status-bar";
-
-// const Species = (props) => {
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <StatusBar style="light" />
-//       <View style={{ flex: 1 }}>
-//         <CustomHeader
-//           title="Species"
-//           // subtitle="Welcome back"
-//           icons={["options", "search", "notifications"]}
-//           onIconPress={{
-//             options: () => alert("Options Pressed"),
-//             search: () => alert("Search Pressed"),
-//             notifications: () => alert("Notifications Pressed"),
-//           }}
-//         />
-//         <View style={styles.containerBox}>
-//           <View style={styles.orangeContainer}>
-//             <Text style={styles.textLabel}>Hi 1</Text>
-//           </View>
-
-//           <View style={styles.redContainer}>
-//             <Text style={styles.textLabel}>Hi 2</Text>
-//           </View>
-
-//           <View style={styles.blueContainer}>
-//             <Text style={styles.textLabel}>Hi 3</Text>
-//           </View>
-//         </View>
-//       </View>
-//     </SafeAreaView>
-//   );
-// };
-
-// export default Species;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 16,
-//     backgroundColor: "#001A1A",
-//   },
-//   title: {
-//     fontSize: 16,
-//     fontWeight: "600",
-//     color: "#fff",
-//     padding: 16,
-//   },
-//   containerBox: {
-//     flex: 1,
-//   },
-//   orangeContainer: {
-//     flex: 1,
-//     backgroundColor: "orange",
-//   },
-//   redContainer: {
-//     flex: 1,
-//     backgroundColor: "red",
-//   },
-//   blueContainer: {
-//     flex: 1,
-//     backgroundColor: "blue",
-//   },
-//   textLabel: {
-//     color: "#fff",
-//   },
-// });
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -80,26 +8,112 @@ import {
   Image,
   ScrollView,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import CustomHeader from "../Components/customHeader";
 import { StatusBar } from "expo-status-bar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import invasiveSpecies from "../Components/invasiveSpecies";
+
+// import invasiveSpecies from "../Components/invasiveSpecies";
+// import invasiveSpecies from "../species.json";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const Species = (props) => {
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const [invasiveSpecies, setInvasiveSpecies] = useState([]);
+
+  // useEffect(() => {
+  //   const fetchSpecies = async () => {
+  //     try {
+  //       const data = require("../species.json");
+  //       setTimeout(() => {
+  //         setInvasiveSpecies(data);
+  //         setLoading(false);
+  //       }, 1000);
+  //     } catch (error) {
+  //       console.error("Failed to load species data", error);
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchSpecies();
+  // }, []);
+  useEffect(() => {
+  const fetchSpecies = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        // No token means user not logged in, handle as needed
+        setLoading(false);
+        return;
+      }
+
+      const cached = await AsyncStorage.getItem("cachedSpecies");
+      if (cached) {
+        setInvasiveSpecies(JSON.parse(cached));
+        setLoading(false);
+        return;
+      }
+
+      // If no cache, load from JSON and cache it
+      const data = require("../species.json");
+      await AsyncStorage.setItem("cachedSpecies", JSON.stringify(data));
+      setInvasiveSpecies(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error loading species data", error);
+      setLoading(false);
+    }
+  };
+
+  fetchSpecies();
+}, []);
+
+  if (loading) {
+    return (
+      <>
+        <StatusBar style="light" />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#001A1A",
+          }}
+        >
+          <ActivityIndicator size="large" color="#00aa00" />
+          <Text
+            style={{
+              marginTop: 10,
+              fontSize: 16,
+              fontWeight: "500",
+              color: "#fff",
+            }}
+          >
+            Fetching species...
+          </Text>
+        </View>
+      </>
+    );
+  }
+
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
       <View style={{ flex: 1 }}>
         <CustomHeader
           title="Species"
-          icons={["options", "search", "notifications"]}
-          onIconPress={{
-            options: () => alert("Options Pressed"),
-            search: () => alert("Search Pressed"),
-            notifications: () => alert("Notifications Pressed"),
-          }}
+          icons={["", "", ""]}
+          onIconPress={
+            {
+              // options: () => alert("Options Pressed"),
+              // search: () => alert("Search Pressed"),
+              // notifications: () => alert("Notifications Pressed"),
+            }
+          }
         />
 
         <FlatList
@@ -108,20 +122,25 @@ const Species = (props) => {
           renderItem={({ item }) => (
             <Pressable
               style={styles.card}
-              onPress={() => alert(`Pressed on ${item.Name}`)}
+              onPress={() =>
+                navigation.navigate("SpeciesIndividual", {
+                  CommonName: item.CommonName,
+                  ScientificName: item.ScientificName,
+                  Durations: item.Durations,
+                  GrowthHabits: item.GrowthHabits,
+                  OtherCommonNames: item.OtherCommonNames,
+                  Description: item.WikiDescription,
+                  image: item.WikiImage,
+                  NativeStatus: JSON.parse(
+                    "[" + item.NativeStatuses.replace(/'/g, '"') + "]"
+                  )[0]?.Type,
+                })
+              }
             >
               <View style={styles.CardContainer}>
-                {/* <Image
-                  // source={{ uri: item["Image Address"] }}
-                  source={{ uri: item["Image Address"].split(",")[0].trim() }}
-                  style={styles.image}
-                /> */}
-                {item["Image Address"] &&
-                item["Image Address"].trim() !== "" ? (
+                {item["WikiImage"] && item["WikiImage"].trim() !== "" ? (
                   <Image
-                    source={{
-                      uri: item["Image Address"].split(",")[0].trim(),
-                    }}
+                    source={{ uri: item["WikiImage"] }}
                     style={styles.image}
                   />
                 ) : (
@@ -132,12 +151,22 @@ const Species = (props) => {
 
                 <View style={styles.TextContainer}>
                   <Text style={styles.topText}>Name</Text>
-                  <Text style={styles.name}>{item.Name}</Text>
+                  <Text style={styles.name}>{item.CommonName}</Text>
                 </View>
 
                 <View style={styles.TextContainer}>
                   <Text style={styles.topText}>Label</Text>
-                  <Text style={styles.name}>Invasive</Text>
+                  {item.InvasiveFlag == "yes" ? (
+                    <Text style={styles.name}>Invasive</Text>
+                  ) : (
+                    <Text style={styles.name}>
+                      {
+                        JSON.parse(
+                          "[" + item.NativeStatuses.replace(/'/g, '"') + "]"
+                        )[0]?.Type
+                      }
+                    </Text>
+                  )}
                 </View>
                 <View>
                   <Ionicons
@@ -215,6 +244,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     flexWrap: "wrap",
     maxWidth: 150,
+    textTransform: "capitalize",
   },
   label: {
     marginTop: 4,

@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
   View,
@@ -33,7 +34,14 @@ const HorizontalSection = ({
             style={styles.card}
             onPress={() => onItemPress(item)}
           >
-            <Image source={{ uri: item.image }} style={styles.image} />
+            {/* <Image source={{ uri: item.image }} style={styles.image} /> */}
+            {item.image ? (
+              <Image source={{ uri: item.image }} style={styles.image} />
+            ) : (
+              <View style={[styles.image, styles.placeholder]}>
+                <Ionicons name="image" size={32} color="#ffffff7A" />
+              </View>
+            )}
             <Text style={styles.label}>{item.label}</Text>
           </Pressable>
         ))}
@@ -68,7 +76,6 @@ const styles = StyleSheet.create({
     color: "#408080",
     textTransform: "uppercase",
     lineHeight: 16,
-
   },
   card: {
     marginRight: 8,
@@ -79,6 +86,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 8,
   },
+  placeholder: {
+    backgroundColor: "#2B4040", // or any fallback color
+    justifyContent: "center",
+    alignItems: "center",
+  },
   label: {
     fontSize: 16,
     color: "#001A1A",
@@ -86,5 +98,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     maxWidth: 120,
     paddingHorizontal: 8,
+    textTransform: "capitalize",
   },
 });

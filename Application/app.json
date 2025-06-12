@@ -11,7 +11,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#001A1A"
     },
-
     "ios": {
       "supportsTablet": true
     },
@@ -53,7 +52,9 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
           "recordAudioAndroid": true
         }
-      ]
+      ],
+      "expo-web-browser",
+      "expo-mail-composer"
     ]
   }
 }

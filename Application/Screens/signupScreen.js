@@ -26,6 +26,7 @@ export default function SignUpScreen({ ipAddress }) {
   const [emailVarify, setEmailVarify] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordVarify, setPasswordVarify] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const url = `http://${backendIp}:${backendPort}/signup`;
 
@@ -51,7 +52,7 @@ export default function SignUpScreen({ ipAddress }) {
       axios
         .post(url, userData)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
 
           // Clear input fields
           setName("");
@@ -158,16 +159,33 @@ export default function SignUpScreen({ ipAddress }) {
                   style={styles.input}
                   placeholder="Password"
                   placeholderTextColor="#8CA0A0"
-                  secureTextEntry
+                  // secureTextEntry
+                  secureTextEntry={!showPassword}
                   value={password}
                   onChangeText={handlePassword}
                   autoCapitalize="none"
                   autoCorrect={false}
                 />
                 {password.length < 1 ? null : passwordVarify ? (
-                  <Feather name="check-circle" color="green" size={16} />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Feather
+                      name={showPassword ? "eye" : "eye-off"}
+                      color="green"
+                      size={16}
+                    />
+                  </TouchableOpacity>
                 ) : (
-                  <Feather name="x-circle" color="red" size={16} />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Feather
+                      name={showPassword ? "eye" : "eye-off"}
+                      color="red"
+                      size={16}
+                    />
+                  </TouchableOpacity>
                 )}
               </View>
               {password.length < 1 ? null : passwordVarify ? null : (

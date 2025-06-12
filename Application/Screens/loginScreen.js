@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginScreen() {
   const backendIp = process.env.EXPO_PUBLIC_BACKEND_IP;
@@ -27,6 +28,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [passwordVarify, setPasswordVarify] = useState(false);
   const { login } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
 
   const url = `http://${backendIp}:${backendPort}/login`;
 
@@ -40,39 +42,103 @@ export default function LoginScreen() {
     setPasswordVarify(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(text));
   };
 
+  // const handleSubmit = () => {
+  //   const userData = { email, password };
+
+  //   if (emailVarify && passwordVarify) {
+  //     axios
+  //       .post(url, userData)
+  //       .then((res) => {
+  //         console.log(res.data);
+
+  //         // Clear input fields
+  //         setEmail("");
+  //         setPassword("");
+  //         setEmailVarify(false);
+  //         setPasswordVarify(false);
+  //         if (res.data.status == "Ok") {
+  //           // Alert.alert("Login Successful", "Welcome to NatureShield!");
+  //           // login(res.data.token);
+  //           // // navigation.navigate("mainNavigator");
+
+  //           const token = res.data.token;
+
+  //           // Save token to AsyncStorage
+  //           AsyncStorage.setItem("token", token)
+  //             .then(() => {
+  //               login(token); // Update context
+  //               Alert.alert("Login Successful", "Welcome to NatureShield!");
+  //               // Optional: Navigate to main screen
+  //               // navigation.navigate("mainNavigator");
+  //             })
+  //             .catch((err) => {
+  //               console.error("Failed to save token:", err);
+  //               Alert.alert("Error", "Could not save login session.");
+  //             });
+
+  //         } else {
+  //           Alert.alert(JSON.stringify(res.data));
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         if (error.response) {
+  //           console.log("Response error:", error.response.data);
+  //         } else if (error.request) {
+  //           console.log("Request error:", error.request);
+  //         } else {
+  //           console.log("General error:", error.message);
+  //         }
+  //       });
+  //   } else {
+  //     alert("Fill mandatory details");
+  //   }
+  // };
+
   const handleSubmit = () => {
     const userData = { email, password };
 
     if (emailVarify && passwordVarify) {
       axios
         .post(url, userData)
-        .then((res) => {
-          console.log(res.data);
+        .then(async (res) => {
+          if (res.data.status === "Ok") {
+            const token = res.data.token;
+            try {
+              const decoded = jwtDecode(token);
+              const expiryTime = decoded.exp * 1000;
+              await login(token, expiryTime);
 
-          // Clear input fields
-          setEmail("");
-          setPassword("");
-          setEmailVarify(false);
-          setPasswordVarify(false);
-          if (res.data.status == "Ok") {
-            Alert.alert("Login Successful", "Welcome to NatureShield!");
-            login(res.data.token);
-            // navigation.navigate("mainNavigator");
+              setEmail("");
+              setPassword("");
+              setEmailVarify(false);
+              setPasswordVarify(false);
+
+              Alert.alert("Login Successful", "Welcome to NatureShield!");
+            } catch (err) {
+              console.error("Error decoding token:", err);
+              Alert.alert("Login Error", "Failed to process token.");
+            }
           } else {
-            Alert.alert(JSON.stringify(res.data));
+            Alert.alert(
+              "Login Failed",
+              res.data.message || JSON.stringify(res.data)
+            );
           }
         })
         .catch((error) => {
           if (error.response) {
             console.log("Response error:", error.response.data);
+            Alert.alert("Error", error.response.data.message || "Server error");
           } else if (error.request) {
             console.log("Request error:", error.request);
+            Alert.alert("Error", "Network error or server is unreachable.");
           } else {
             console.log("General error:", error.message);
+            Alert.alert("Error", error.message);
           }
         });
     } else {
-      alert("Fill mandatory details");
+      Alert.alert("Validation", "Fill mandatory details correctly.");
     }
   };
 
@@ -130,16 +196,33 @@ export default function LoginScreen() {
                   style={styles.input}
                   placeholder="Password"
                   placeholderTextColor="#8CA0A0"
-                  secureTextEntry
+                  // secureTextEntry
+                  secureTextEntry={!showPassword}
                   value={password}
                   onChangeText={handlePassword}
                   autoCapitalize="none"
                   autoCorrect={false}
                 />
                 {password.length < 1 ? null : passwordVarify ? (
-                  <Feather name="check-circle" color="green" size={16} />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Feather
+                      name={showPassword ? "eye" : "eye-off"}
+                      color="green"
+                      size={16}
+                    />
+                  </TouchableOpacity>
                 ) : (
-                  <Feather name="x-circle" color="red" size={16} />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Feather
+                      name={showPassword ? "eye" : "eye-off"}
+                      color="red"
+                      size={16}
+                    />
+                  </TouchableOpacity>
                 )}
               </View>
               {password.length < 1 ? null : passwordVarify ? null : (

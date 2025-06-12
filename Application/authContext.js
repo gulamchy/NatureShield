@@ -12,23 +12,44 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const stored = await AsyncStorage.getItem("token");
-        const storeCount = await AsyncStorage.getItem("countClick");
+        const storedToken = await AsyncStorage.getItem("token");
+        const storedExpiry = await AsyncStorage.getItem("tokenExpiry");
 
-        setIsLoggedIn(!!stored);
+        if (storedToken && storedExpiry) {
+          const expiryTime = parseInt(storedExpiry, 10);
+          const now = Date.now();
+
+          if (now < expiryTime) {
+            setIsLoggedIn(true);
+          } else {
+            await AsyncStorage.removeItem("token");
+            await AsyncStorage.removeItem("tokenExpiry");
+            setIsLoggedIn(false);
+          }
+        } else {
+          setIsLoggedIn(false);
+        }
+
+        const storeCount = await AsyncStorage.getItem("countClick");
         setCountClick(parseInt(storeCount, 10) || 0);
       } catch (error) {
         console.error("Error checking login status:", error);
         setIsLoggedIn(false);
       }
     };
+
     checkLoginStatus();
   }, []);
 
-  const login = async (token) => {
-    await AsyncStorage.setItem("token", token);
-    // await AsyncStorage.setItem("isLoggedIn", "true");
-    setIsLoggedIn(true);
+  const login = async (token, expiryTime) => {
+    try {
+      await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("tokenExpiry", expiryTime.toString());
+      setIsLoggedIn(true);
+    } catch (error) {
+      console.error("Error storing token:", error);
+      setIsLoggedIn(false);
+    }
   };
 
   const clickCamera = async () => {
@@ -37,11 +58,30 @@ export const AuthProvider = ({ children }) => {
     await AsyncStorage.setItem("countClick", newCount.toString());
   };
 
+  // const logout = async () => {
+
+  //   await AsyncStorage.removeItem("token");
+  //   await AsyncStorage.removeItem("tokenExpiry");
+  //   await AsyncStorage.setItem("isLoggedIn", "false");
+  //   setIsLoggedIn(false);
+  // };
   const logout = async () => {
-    await AsyncStorage.removeItem("token");
+  try {
+    await AsyncStorage.multiRemove([
+      "token",
+      "tokenExpiry",
+      "cachedSpecies",
+      "cachedReports",
+      "cachedProfile",
+      "cachedUser"
+    ]);
     await AsyncStorage.setItem("isLoggedIn", "false");
     setIsLoggedIn(false);
-  };
+  } catch (error) {
+    console.error("Error clearing async storage on logout:", error);
+  }
+};
+
 
   if (isLoggedIn === null) {
     return (
@@ -50,6 +90,7 @@ export const AuthProvider = ({ children }) => {
       </View>
     );
   }
+
   return (
     <AuthContext.Provider
       value={{ isLoggedIn, login, logout, countClick, clickCamera }}

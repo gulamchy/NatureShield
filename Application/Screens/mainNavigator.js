@@ -1,11 +1,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "./homeScreen";
-import Species from "./speciesScreen";
+// import Species from "./speciesScreen";
+import SpeciesNavigator from "./speciesNavigator";
 import Report from "./reportsScreen";
 import Profile from "./profileScreen";
 import IdentifyNavigator from "./identifyNavigator";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import ProfileNavigator from "./profileNavigator";
 
 const TabNav = createBottomTabNavigator();
 
@@ -62,7 +64,7 @@ export default function MainNavigator() {
       />
       <TabNav.Screen
         name="Species"
-        component={Species}
+        component={SpeciesNavigator}
         options={{ headerShown: false }}
       />
       <TabNav.Screen
@@ -89,7 +91,7 @@ export default function MainNavigator() {
       />
       <TabNav.Screen
         name="More"
-        component={Profile}
+        component={ProfileNavigator}
         options={{ headerShown: false }}
       />
     </TabNav.Navigator>

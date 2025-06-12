@@ -16,6 +16,8 @@ import CustomHeader from "../Components/customHeader";
 import { getReadableLocationAndTime } from "../Components/getReadableLocationAndTime";
 import { useState, useEffect } from "react";
 import ResultReport from "./resultReport";
+import axios from "axios";
+import speciesData from "../species.json";
 
 export default function ResultScreen() {
   const navigation = useNavigation();
@@ -27,11 +29,31 @@ export default function ResultScreen() {
   const isInvasive = route?.params?.isInvasive;
   const confidence = route?.params?.confidence;
   const [locationTimeInfo, setLocationTimeInfo] = useState(null);
-  // const location = "";
-  // const date = "";
+  const [snippet, setSnippet] = useState("");
+  const backendIp = process.env.EXPO_PUBLIC_BACKEND_IP;
+  const backendPort = process.env.EXPO_PUBLIC_BACKEND_PORT;
+  const [finalIsInvasive, setFinalIsInvasive] = useState(false);
 
-  console.log(isInvasive);
-  console.log(confidence);
+  const url = `http://${backendIp}:${backendPort}/extract`;
+
+  const handleSnippet = (name) => {
+    axios
+      .post(url, { scientificName: name })
+      .then((res) => {
+        // console.log("Full response:", res.data.snippet);
+        setSnippet(res.data.snippet);
+      })
+      .catch((err) => {
+        console.error("Error from backend:", err.response?.data || err.message);
+      });
+  };
+
+  useEffect(() => {
+    if (scientificName) {
+      handleSnippet(scientificName);
+    }
+  }, [scientificName]);
+
   useEffect(() => {
     (async () => {
       const info = await getReadableLocationAndTime();
@@ -41,20 +63,40 @@ export default function ResultScreen() {
     })();
   }, []);
 
-  // console.log(locationTimeInfo?.locationName);
-  // console.log(locationTimeInfo?.timestamp);
+  useEffect(() => {
+    if (route?.params?.isInvasive === true) {
+      setFinalIsInvasive(true);
+      return;
+    }
+
+    if (scientificName) {
+      const match = speciesData.find(
+        (species) =>
+          species.ScientificName?.toLowerCase().trim() ===
+          scientificName.toLowerCase().trim()
+      );
+
+      if (match?.InvasiveFlag === "Yes") {
+        setFinalIsInvasive(true);
+      } else {
+        setFinalIsInvasive(false);
+      }
+    }
+  }, [route?.params?.isInvasive, scientificName]);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
-      <View style={styles.wrapper}>
+      <ScrollView style={styles.wrapper}>
         <CustomHeader
           title="Identify"
-          icons={["warning", "information-circle"]}
-          onIconPress={{
-            warning: () => alert("Warning Pressed"),
-            "information-circle": () => alert("Info Pressed"),
-          }}
+          icons={["", ""]}
+          onIconPress={
+            {
+              // "warning": () => alert("Warning Pressed"),
+              // "information-circle": () => alert("Info Pressed"),
+            }
+          }
         />
         <View style={styles.contentContainer}>
           <View style={styles.imageContainer}>
@@ -67,8 +109,31 @@ export default function ResultScreen() {
 
           <View style={styles.infoContainer}>
             {/* <Text style={styles.infoText}>{scientificName}</Text> */}
-            <ScrollView style={styles.scrollInfoContainer}>
+            <View style={styles.scrollInfoContainer}>
               <View style={styles.infoInnerContainer}>
+                <View style={styles.nameContent}>
+                  <View
+                    style={[
+                      styles.invasiveContainer,
+                      {
+                        backgroundColor: finalIsInvasive
+                          ? "#F872342A"
+                          : "#54AF892A",
+                        borderColor: finalIsInvasive ? "#F87234" : "#54AF89",
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.invasiveText,
+                        { color: finalIsInvasive ? "#F87234" : "#54AF89" },
+                      ]}
+                    >
+                      {finalIsInvasive ? "Invasive" : "Non-Invasive"}
+                    </Text>
+                  </View>
+                </View>
+
                 <View style={styles.nameContent}>
                   <Text style={styles.headerText}>Likely</Text>
                   <View style={styles.namePercentageContent}>
@@ -79,14 +144,10 @@ export default function ResultScreen() {
 
                 <View style={styles.nameContent}>
                   <Text style={styles.headerText}>Learn About Species</Text>
-                  <Text style={styles.textDetails}>
-                    The common starling, also known simply as the starling in
-                    Great Britain and Ireland, and as European starling in North
-                    America.
-                  </Text>
+                  <Text style={styles.textDetails}>{snippet}</Text>
                 </View>
               </View>
-            </ScrollView>
+            </View>
 
             <View style={styles.botomContent}>
               <View style={styles.buttonContainer}>
@@ -96,23 +157,31 @@ export default function ResultScreen() {
                 >
                   <Text style={styles.buttonText}>Cancel</Text>
                 </Pressable>
-
-                <Pressable
-                  onPress={() =>
-                    navigation.navigate("ResultReport", {
-                      uri: uri, // original image URI
-                      newPath: newPath, // local file path, if needed
-                      scientificName: scientificName, // adapt key name if different
-                      isInvasive: isInvasive,
-                      confidence: confidence,
-                      location: locationTimeInfo?.locationName || "",
-                      date: locationTimeInfo?.timestamp || "",
-                    })
-                  }
-                  style={[styles.button, { backgroundColor: "#ffffff1A" }]}
-                >
-                  <Text style={styles.buttonText}>Report Plant</Text>
-                </Pressable>
+                {confidence > 80 ? (
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate("ResultReport", {
+                        uri: uri, // original image URI
+                        newPath: newPath, // local file path, if needed
+                        scientificName: scientificName, // adapt key name if different
+                        isInvasive: finalIsInvasive,
+                        confidence: confidence,
+                        location: locationTimeInfo?.locationName || "",
+                        date: locationTimeInfo?.timestamp || "",
+                      })
+                    }
+                    style={[styles.button, { backgroundColor: "#ffffff1A" }]}
+                  >
+                    <Text style={styles.buttonText}>Report Plant</Text>
+                  </Pressable>
+                ) : (
+                  <Pressable
+                    onPress={() => navigation.navigate("IdentifyMain")}
+                    style={[styles.button, { backgroundColor: "#ffffff1A" }]}
+                  >
+                    <Text style={styles.buttonText}>Take Picture Again</Text>
+                  </Pressable>
+                )}
               </View>
 
               <View style={styles.stepContainer}>
@@ -132,7 +201,7 @@ export default function ResultScreen() {
             </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
 
       {/* <Button onPress={onRetake} title="Take another picture" />  backgroundColor: "#ffffff1A", */}
     </SafeAreaView>
@@ -150,16 +219,19 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 16,
     gap: 16,
   },
-  contentContainer: { flex: 1, gap: 32, paddingHorizontal: 16, },
+  contentContainer: { flex: 1, gap: 32, paddingHorizontal: 16 },
   imageContainer: {
-    flex: 1,
+    // flex: 1,
+    // width: "100%",
     alignItems: "center",
     justifyContent: "center",
     paddingTop: 16,
     marginVertical: 16,
   },
   image: {
-    flex: 1,
+    // flex: 1,
+    width: 196,
+    height: 196,
     aspectRatio: 1,
     contentFit: "cover",
     borderRadius: 16,
@@ -177,6 +249,25 @@ const styles = StyleSheet.create({
     gap: 32,
   },
   nameContent: {},
+  invasiveContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    // backgroundColor: "#F872342A",
+    // backgroundColor: "#54AF892A",
+    paddingVertical: 20,
+    marginHorizontal: 64,
+    borderRadius: 100,
+    borderWidth: 2,
+    // borderColor: "#F87234"
+    // borderColor: "#54AF89"
+  },
+  invasiveText: {
+    fontSize: 18,
+    fontWeight: "800",
+    // color: "#F87234",
+    // color: "#54AF89",
+  },
   headerText: {
     fontSize: 12,
     fontWeight: "600",
@@ -213,7 +304,7 @@ const styles = StyleSheet.create({
   botomContent: {
     flex: 1,
     justifyContent: "flex-end",
-    marginBottom: 32,
+    marginVertical: 32,
     gap: 32,
     // alignItems: "center",
   },

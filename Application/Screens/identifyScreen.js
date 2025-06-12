@@ -54,10 +54,10 @@ const Identify = (props) => {
       <View style={{ flex: 1 }}>
         <CustomHeader
           title="Identify"
-          icons={["warning", "information-circle"]}
+          icons={["", ""]}
           onIconPress={{
-            warning: () => alert("Warning Pressed"),
-            "information-circle": () => alert("Info Pressed"),
+            // "warning": () => alert("Warning Pressed"),
+            // "information-circle": () => alert("Info Pressed"),
           }}
         />
 
