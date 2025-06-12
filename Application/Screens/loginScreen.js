@@ -11,7 +11,6 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "../authContext";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -41,58 +40,6 @@ export default function LoginScreen() {
     setPassword(text);
     setPasswordVarify(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(text));
   };
-
-  // const handleSubmit = () => {
-  //   const userData = { email, password };
-
-  //   if (emailVarify && passwordVarify) {
-  //     axios
-  //       .post(url, userData)
-  //       .then((res) => {
-  //         console.log(res.data);
-
-  //         // Clear input fields
-  //         setEmail("");
-  //         setPassword("");
-  //         setEmailVarify(false);
-  //         setPasswordVarify(false);
-  //         if (res.data.status == "Ok") {
-  //           // Alert.alert("Login Successful", "Welcome to NatureShield!");
-  //           // login(res.data.token);
-  //           // // navigation.navigate("mainNavigator");
-
-  //           const token = res.data.token;
-
-  //           // Save token to AsyncStorage
-  //           AsyncStorage.setItem("token", token)
-  //             .then(() => {
-  //               login(token); // Update context
-  //               Alert.alert("Login Successful", "Welcome to NatureShield!");
-  //               // Optional: Navigate to main screen
-  //               // navigation.navigate("mainNavigator");
-  //             })
-  //             .catch((err) => {
-  //               console.error("Failed to save token:", err);
-  //               Alert.alert("Error", "Could not save login session.");
-  //             });
-
-  //         } else {
-  //           Alert.alert(JSON.stringify(res.data));
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         if (error.response) {
-  //           console.log("Response error:", error.response.data);
-  //         } else if (error.request) {
-  //           console.log("Request error:", error.request);
-  //         } else {
-  //           console.log("General error:", error.message);
-  //         }
-  //       });
-  //   } else {
-  //     alert("Fill mandatory details");
-  //   }
-  // };
 
   const handleSubmit = () => {
     const userData = { email, password };

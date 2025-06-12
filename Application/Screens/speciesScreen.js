@@ -13,10 +13,6 @@ import {
 import CustomHeader from "../Components/customHeader";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-
-// import invasiveSpecies from "../Components/invasiveSpecies";
-// import invasiveSpecies from "../species.json";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
@@ -25,51 +21,34 @@ const Species = (props) => {
   const [loading, setLoading] = useState(true);
   const [invasiveSpecies, setInvasiveSpecies] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchSpecies = async () => {
-  //     try {
-  //       const data = require("../species.json");
-  //       setTimeout(() => {
-  //         setInvasiveSpecies(data);
-  //         setLoading(false);
-  //       }, 1000);
-  //     } catch (error) {
-  //       console.error("Failed to load species data", error);
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchSpecies();
-  // }, []);
   useEffect(() => {
-  const fetchSpecies = async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        // No token means user not logged in, handle as needed
+    const fetchSpecies = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const cached = await AsyncStorage.getItem("cachedSpecies");
+        if (cached) {
+          setInvasiveSpecies(JSON.parse(cached));
+          setLoading(false);
+          return;
+        }
+
+        const data = require("../species.json");
+        await AsyncStorage.setItem("cachedSpecies", JSON.stringify(data));
+        setInvasiveSpecies(data);
         setLoading(false);
-        return;
-      }
-
-      const cached = await AsyncStorage.getItem("cachedSpecies");
-      if (cached) {
-        setInvasiveSpecies(JSON.parse(cached));
+      } catch (error) {
+        console.error("Error loading species data", error);
         setLoading(false);
-        return;
       }
+    };
 
-      // If no cache, load from JSON and cache it
-      const data = require("../species.json");
-      await AsyncStorage.setItem("cachedSpecies", JSON.stringify(data));
-      setInvasiveSpecies(data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error loading species data", error);
-      setLoading(false);
-    }
-  };
-
-  fetchSpecies();
-}, []);
+    fetchSpecies();
+  }, []);
 
   if (loading) {
     return (
@@ -98,7 +77,6 @@ const Species = (props) => {
       </>
     );
   }
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -224,7 +202,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   placeholder: {
-    backgroundColor: "#2B4040", // or any fallback color
+    backgroundColor: "#2B4040",
     justifyContent: "center",
     alignItems: "center",
   },

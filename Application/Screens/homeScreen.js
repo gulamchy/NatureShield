@@ -12,7 +12,6 @@ import * as WebBrowser from 'expo-web-browser';
 
 
 import Ionicons from "@expo/vector-icons/Ionicons";
-// import { LinearGradient } from "expo-linear-gradient";
 
 const Home = (props) => {
   const navigation = useNavigation();

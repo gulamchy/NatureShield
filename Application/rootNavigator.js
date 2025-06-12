@@ -50,7 +50,7 @@ export default function RootNavigator() {
   if (!appIsReady || isLoggedIn === null) {
     return null;
   }
-  console.log(isLoggedIn);
+
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>

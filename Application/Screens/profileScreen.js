@@ -16,6 +16,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { AuthContext } from "../authContext";
 import { Ionicons } from "@expo/vector-icons";
+import * as WebBrowser from "expo-web-browser";
 
 const Profile = () => {
   const backendIp = process.env.EXPO_PUBLIC_BACKEND_IP;
@@ -29,9 +30,10 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("cachedUser");
-    await AsyncStorage.removeItem("cachedProfile");
     logout();
+  };
+  const openLink = async (url) => {
+    const result = await WebBrowser.openBrowserAsync(url);
   };
 
   // useEffect(() => {
@@ -86,20 +88,34 @@ const Profile = () => {
         const user = res.data.data;
         setUserData(user);
         await AsyncStorage.setItem("cachedUser", JSON.stringify(user));
-
-        const profileRes = await axios.get(`${url}/${user._id}`);
-        const profile = profileRes.data;
-        setProfileData(profile);
-        await AsyncStorage.setItem("cachedProfile", JSON.stringify(profile));
+        try {
+          const profileRes = await axios.get(`${url}/${user._id}`);
+          const profile = profileRes.data;
+          setProfileData(profile);
+          await AsyncStorage.setItem("cachedProfile", JSON.stringify(profile));
+        } catch (profileError) {
+          if (profileError.response && profileError.response.status !== 200) {
+            const emptyProfile = {
+              bio: "",
+              location: "",
+              imageUrl: "",
+              phone: "",
+            };
+            setProfileData(emptyProfile);
+            console.log(profileData);
+            await AsyncStorage.setItem(
+              "cachedProfile",
+              JSON.stringify(emptyProfile)
+            );
+          } else {
+            // Other errors, rethrow or handle differently
+            throw profileError;
+          }
+        }
 
         setLoading(false);
       } catch (err) {
-        console.error(
-          "Error loading profile screen:",
-          err.response?.data || err.message
-        );
-        setUserData(null);
-        setProfileData(null);
+        console.log(err);
         setLoading(false);
       }
     };
@@ -214,7 +230,9 @@ const Profile = () => {
             <View style={styles.buttonBox}>
               <Pressable
                 style={styles.buttonInfo}
-                onPress={() => navigation.navigate("ProfileEditScreen")}
+                onPress={() =>
+                  openLink("https://www.youtube.com/@NatureShield-csci436")
+                }
               >
                 <View style={styles.iconBox}>
                   <Ionicons name="play" size={16} color="#3E7272" />

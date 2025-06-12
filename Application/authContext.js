@@ -6,7 +6,7 @@ import { ActivityIndicator, View } from "react-native";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(null); // null = loading state
+  const [isLoggedIn, setIsLoggedIn] = useState(null); 
   const [countClick, setCountClick] = useState(0);
 
   useEffect(() => {
@@ -58,13 +58,6 @@ export const AuthProvider = ({ children }) => {
     await AsyncStorage.setItem("countClick", newCount.toString());
   };
 
-  // const logout = async () => {
-
-  //   await AsyncStorage.removeItem("token");
-  //   await AsyncStorage.removeItem("tokenExpiry");
-  //   await AsyncStorage.setItem("isLoggedIn", "false");
-  //   setIsLoggedIn(false);
-  // };
   const logout = async () => {
   try {
     await AsyncStorage.multiRemove([

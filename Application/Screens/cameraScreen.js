@@ -13,17 +13,11 @@ import {
   View,
   SafeAreaView,
 } from "react-native";
-import { Image } from "expo-image";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import Slider from "@react-native-community/slider";
 import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system";
 import { AuthContext } from "../authContext";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import CameraPreview from "../Components/cameraPreviewComponent";
-import PicturePreview from "./picturePreview";
 
 export default function CameraScreen() {
   const navigation = useNavigation();
@@ -62,19 +56,6 @@ export default function CameraScreen() {
     setFlash((prev) => (prev === "off" ? "on" : "off"));
   };
 
-  // const renderPicture = () => {
-  //   return (
-  //     <View>
-  //       <Image
-  //         source={{ uri }}
-  //         contentFit="contain"
-  //         style={{ width: 300, aspectRatio: 1 }}
-  //       />
-  //       <Button onPress={() => setUri(null)} title="Take another picture" />
-  //     </View>
-  //   );
-  // };
-
   const takePicture = async () => {
     try {
       const photo = await ref.current?.takePictureAsync();
@@ -82,10 +63,8 @@ export default function CameraScreen() {
 
       setUri(photo.uri);
 
-      // Save to media library
       const asset = await MediaLibrary.createAssetAsync(photo.uri);
 
-      // Save to local file system (copy image to local app folder)
       const filename = photo.uri.split("/").pop();
       const newPath = FileSystem.documentDirectory + filename;
 
@@ -94,48 +73,12 @@ export default function CameraScreen() {
         to: newPath,
       });
 
-      // console.log("Saved to media library:", asset.uri);
-      // console.log("Copied to local folder:", newPath);
-      // await uploadToServer(newPath);
       navigation.navigate("PicturePreview", { uri: photo.uri });
-      // On capture button press
       clickCamera();
     } catch (error) {
       console.error("Error capturing photo:", error);
     }
   };
-
-  // const uploadToServer = async (localUri) => {
-  //   try {
-  //     const filename = localUri.split("/").pop();
-  //     const type = "image/jpeg"; // or use mime.lookup(filename)
-
-  //     const formData = new FormData();
-  //     formData.append("image", {
-  //       uri: localUri,
-  //       name: filename,
-  //       type,
-  //     });
-  //     formData.append("category", "plants"); // hardcoded category
-
-  //     const response = await fetch("http://10.0.0.76:5001/analyze", {
-  //       method: "POST",
-  //       body: formData,
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-
-  //     const data = await response.json();
-  //     console.log("Server response:", data);
-  //     alert(JSON.stringify(data, null, 2));
-  //   } catch (error) {
-  //     console.error("Upload failed:", error);
-  //     alert("Failed to upload: " + error.message);
-  //   }
-  // };
-
-  // const renderCamera = () => {
   //   return (
   //     <CameraView
   //       style={styles.container}
@@ -215,20 +158,6 @@ export default function CameraScreen() {
         takePicture={takePicture}
         navigation={navigation}
       />
-
-      {/* {uri ? (
-        <PicturePreview uri={uri} />
-      ) : (
-        <CameraPreview
-          refProp={ref}
-          zoom={zoom}
-          setZoom={setZoom}
-          flash={flash}
-          toggleFlash={toggleFlash}
-          takePicture={takePicture}
-          navigation={navigation}
-        />
-      )} */}
     </View>
   );
 }

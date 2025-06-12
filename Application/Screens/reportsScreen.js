@@ -11,6 +11,7 @@ import {
   Pressable,
   ImageBackground,
   ActivityIndicator,
+  FlatList,
 } from "react-native";
 import CustomHeader from "../Components/customHeader";
 import { StatusBar } from "expo-status-bar";
@@ -27,89 +28,6 @@ const Report = () => {
   const [reportList, setReportList] = useState([]);
   const isFocused = useIsFocused();
 
-  // useEffect(() => {
-  //   const fetchReports = async () => {
-  //     const token = await AsyncStorage.getItem("token");
-
-  //     try {
-  //       setLoading(true);
-  //       const res = await axios.post(`${url}/profile`, { token });
-  //       const user = res.data.data;
-  //       setUserData(user);
-
-  //       const reportRes = await axios.get(`${url}/report/${user._id}`);
-  //       const reports = reportRes.data;
-  //       setReportList(reports);
-  //       setLoading(false);
-  //     } catch (err) {
-  //       console.error(
-  //         "Error loading reports:",
-  //         err.response?.data || err.message
-  //       );
-  //       setUserData(null);
-  //       setReportList([]);
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (isFocused) {
-  //     fetchReports();
-  //   }
-  // }, [isFocused]);
-
-  // useEffect(() => {
-  //   const fetchReports = async () => {
-  //     const token = await AsyncStorage.getItem("token");
-
-  //     if (!token) {
-  //       setUserData(null);
-  //       setReportList([]);
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     try {
-  //       setLoading(true);
-
-  //       // Try to load cached reports first
-  //       const cachedReports = await AsyncStorage.getItem("cachedReports");
-  //       if (cachedReports) {
-  //         const cachedData = JSON.parse(cachedReports);
-  //         setReportList(cachedData);
-  //         // You might want to fetch fresh reports in the background here if needed
-  //         setLoading(false);
-  //         return;
-  //       }
-
-  //       // No cache, fetch from API
-  //       const res = await axios.post(`${url}/profile`, { token });
-  //       const user = res.data.data;
-  //       setUserData(user);
-
-  //       const reportRes = await axios.get(`${url}/report/${user._id}`);
-  //       const reports = reportRes.data;
-  //       setReportList(reports);
-
-  //       // Cache the reports for next time
-  //       await AsyncStorage.setItem("cachedReports", JSON.stringify(reports));
-
-  //       setLoading(false);
-  //     } catch (err) {
-  //       console.error(
-  //         "Error loading reports:",
-  //         err.response?.data || err.message
-  //       );
-  //       setUserData(null);
-  //       setReportList([]);
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (isFocused) {
-  //     fetchReports();
-  //   }
-  // }, [isFocused]);
-
   useEffect(() => {
     const fetchReports = async () => {
       const token = await AsyncStorage.getItem("token");
@@ -124,14 +42,12 @@ const Report = () => {
       try {
         setLoading(true);
 
-        // Load cached reports first (if any) for instant UI
         const cachedReports = await AsyncStorage.getItem("cachedReports");
         if (cachedReports) {
           const cachedData = JSON.parse(cachedReports);
           setReportList(cachedData);
         }
 
-        // Always fetch fresh data from API, even if cache exists
         const res = await axios.post(`${url}/profile`, { token });
         const user = res.data.data;
         setUserData(user);
@@ -139,7 +55,6 @@ const Report = () => {
         const reportRes = await axios.get(`${url}/report/${user._id}`);
         const freshReports = reportRes.data;
 
-        // Update only if freshReports differ from current state or always update
         setReportList(freshReports);
         await AsyncStorage.setItem(
           "cachedReports",
@@ -204,8 +119,9 @@ const Report = () => {
           }
         }
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
+      {/* <ScrollView contentContainerStyle={styles.scroll}>
         {reportList.map((report, index) => (
+          report &&
           <View style={styles.card} key={index}>
             <ImageBackground
               source={{ uri: report.image }}
@@ -226,7 +142,35 @@ const Report = () => {
             </ImageBackground>
           </View>
         ))}
-      </ScrollView>
+      </ScrollView> */}
+      <FlatList
+        data={reportList}
+        keyExtractor={(item, index) => item._id || index.toString()}
+        renderItem={({ item }) =>
+          item && (
+            <View style={styles.card}>
+              <ImageBackground
+                source={{ uri: item.image }}
+                style={styles.imageBackground}
+                imageStyle={styles.image}
+              >
+                <View style={styles.overlay}>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.name}>
+                      {item.name || "Unknown Plant"}
+                    </Text>
+                    <Text style={styles.date}>{item.date || ""}</Text>
+                  </View>
+                  <Pressable style={styles.button}>
+                    <Text style={styles.buttonText}>Reported</Text>
+                  </Pressable>
+                </View>
+              </ImageBackground>
+            </View>
+          )
+        }
+        contentContainerStyle={styles.scroll}
+      />
     </SafeAreaView>
   );
 };

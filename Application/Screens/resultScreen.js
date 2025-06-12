@@ -161,9 +161,9 @@ export default function ResultScreen() {
                   <Pressable
                     onPress={() =>
                       navigation.navigate("ResultReport", {
-                        uri: uri, // original image URI
-                        newPath: newPath, // local file path, if needed
-                        scientificName: scientificName, // adapt key name if different
+                        uri: uri, 
+                        newPath: newPath, 
+                        scientificName: scientificName, 
                         isInvasive: finalIsInvasive,
                         confidence: confidence,
                         location: locationTimeInfo?.locationName || "",
@@ -203,7 +203,6 @@ export default function ResultScreen() {
         </View>
       </ScrollView>
 
-      {/* <Button onPress={onRetake} title="Take another picture" />  backgroundColor: "#ffffff1A", */}
     </SafeAreaView>
   );
 }

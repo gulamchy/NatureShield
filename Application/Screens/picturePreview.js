@@ -66,6 +66,7 @@ export default function PicturePreview() {
       alert("Upload failed: " + error.message);
     }
   };
+
   if (loading) {
     return (
       <>
@@ -145,8 +146,6 @@ export default function PicturePreview() {
           </SafeAreaView>
         </View>
       </View>
-
-      {/* <Button onPress={onRetake} title="Take another picture" />  backgroundColor: "#ffffff1A", */}
     </SafeAreaView>
   );
 }

@@ -41,11 +41,8 @@ export default function ResultReport() {
 
   useFocusEffect(
     useCallback(() => {
-      // Reset states
       setLoading(false);
-      setUserData(null);
-
-      // Optionally, trigger any data fetching here if needed
+      // setUserData(null);
     }, [])
   );
 
@@ -58,14 +55,12 @@ export default function ResultReport() {
       const user = res.data.data;
       setUserData(user);
 
-      const userId = user._id; // Replace with actual user ID from auth or route
+      const userId = user._id;
       const formData = new FormData();
 
-      // Required metadata
       formData.append("name", scientificName || "Unknown plant");
       formData.append("date", date);
 
-      // If there's an image URI
       if (uri) {
         const fileInfo = await FileSystem.getInfoAsync(uri);
         if (fileInfo.exists) {
@@ -88,13 +83,13 @@ export default function ResultReport() {
       if (response.status === 200) {
         // alert("Report submitted successfully!");
         sendReportEmail({
-          imageUri: uri, 
+          imageUri: uri,
           scientificName: scientificName,
           time: new Date().toLocaleString(),
-          location: location, 
+          location: location,
         });
 
-        navigation.navigate("Reports"); // or wherever you want
+        navigation.navigate("Reports");
       } else {
         alert("Failed to submit report");
       }

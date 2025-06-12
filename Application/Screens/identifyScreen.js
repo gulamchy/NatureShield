@@ -1,5 +1,5 @@
 import CustomHeader from "../Components/customHeader";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
+import { AuthContext } from "../authContext";
 
 const Identify = (props) => {
   const [image, setImage] = useState(null);
@@ -27,6 +28,7 @@ const Identify = (props) => {
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
   const navigation = useNavigation();
+  const { clickCamera, countClick } = useContext(AuthContext);
   useEffect(() => {}, []);
 
   const pickImage = async () => {
@@ -39,6 +41,7 @@ const Identify = (props) => {
     });
 
     if (!result.canceled) {
+      clickCamera();
       navigation.navigate("PicturePreview", { uri: result.assets[0].uri });
     }
     // navigation.navigate("PicturePreview", { uri: photo.uri });
