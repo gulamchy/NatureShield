@@ -6,6 +6,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 const jwt = require("jsonwebtoken");
 const { ImageAnnotatorClient } = require("@google-cloud/vision");
+const cloudinary = require('./cloudinary.js');
+const Profile = require('./profileSchema.js');
+const Report = require('./reportSchema.js');
 
 const multer = require("multer");
 const axios = require("axios");
@@ -222,6 +225,27 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
   }
 });
 
+app.post("/extract", async (req, res) => {
+  try {
+    const { scientificName } = req.body;
+
+    if (!scientificName) {
+      return res.status(400).json({ error: "Missing scientificName in request body" });
+    }
+
+    const formattedName = encodeURIComponent(scientificName.replace(/\s+/g, "_"));
+    const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${formattedName}`;
+
+    const response = await axios.get(wikiUrl);
+    const snippet = response.data.extract;
+
+    res.json({ snippet });
+  } catch (error) {
+    console.error("Wikipedia fetch error:", error.message);
+    res.status(500).json({ error: "Failed to fetch Wikipedia extract" });
+  }
+});
+
 // Google Visoion API
 // const INVASIVE_LIST = require("./invasiveList");
 // const normalize = require("./normalize");
@@ -268,6 +292,207 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
 //   }
 // });
 
+app.post('/profile/:userId', upload.single('image'), async (req, res) => {
+  try {
+    const { name, phone, bio, location, email } = req.body;
+    const { userId } = req.params;
+    let imageUrl = req.body.existingImage;
+    if (req.file) {
+      const result = await streamUploadFromPath(req.file.path);
+
+      // Add transformation for optimized delivery
+      const transform = "w_400,h_400,c_fill,q_auto,f_auto";
+      const optimizedUrl = result.secure_url.replace(
+        "/upload/",
+        `/upload/${transform}/`
+      );
+      imageUrl = optimizedUrl;
+    }
+
+    const profileData = {
+      name,
+      phone,
+      bio,
+      location,
+      image: imageUrl,
+      email,
+      userId,
+    };
+
+    const profile = await Profile.findOneAndUpdate(
+      { userId },
+      profileData,
+      { new: true, upsert: true }
+    );
+
+    res.json(profile);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+app.get('/profile/:userId', async (req, res) => {
+  try {
+    let profile = await Profile.findOne({ userId: req.params.userId });
+
+    if (!profile) {
+      // Optionally create default profile (optional strategy)
+      profile = await Profile.create({
+        userId: req.params.userId,
+        phone: '',
+        bio: '',
+        location: '',
+        image: null,
+      });
+    }
+
+    res.json(profile);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+// app.post('/report/:userId', upload.single('image'), async (req, res) => {
+//   try {
+//     const { name, date} = req.body;
+//     const { userId } = req.params;
+//     let imageUrl = req.body.existingImage;
+
+//     if (req.file) {
+//       const result = await streamUploadFromPath(req.file.path);
+//       imageUrl = result.secure_url;
+//     }
+
+//     const reportData = {
+//       name,
+//       date,
+//       image: imageUrl,
+//       userId,
+//     };
+
+//     const report = await Report.findOneAndUpdate(
+//       { userId },
+//       reportData,
+//       { new: true, upsert: true }
+//     );
+
+//     res.json(report);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Failed to save report' });
+//   }
+// });
+
+app.post('/report/:userId', upload.single('image'), async (req, res) => {
+  try {
+    const { name, date } = req.body;
+    const { userId } = req.params;
+    let imageUrl = req.body.existingImage;
+
+    // if (req.file) {
+    //   const result = await streamUploadFromPath(req.file.path);
+    //   imageUrl = result.secure_url;
+    // }
+    if (req.file) {
+      const result = await streamUploadFromPath(req.file.path);
+
+      // Add transformation for optimized delivery
+      const transform = "w_600,h_300,c_fill,q_auto,f_auto";
+      const optimizedUrl = result.secure_url.replace(
+        "/upload/",
+        `/upload/${transform}/`
+      );
+      imageUrl = optimizedUrl;
+    }
+
+    const reportData = {
+      name,
+      date,
+      image: imageUrl,
+      userId,
+    };
+
+
+    const report = await Report.create(reportData);
+
+    res.json(report);
+  } catch (err) {
+    console.error("Error creating report:", err);
+    res.status(500).json({ error: 'Failed to save report' });
+  }
+});
+
+
+// app.get('/report/:userId', async (req, res) => {
+//   try {
+//     let report = await Report.find({ userId: req.params.userId });
+
+//     if (!report) {
+//       // Optionally create default profile (optional strategy)
+//       report = await Report.create({
+//         userId: req.params.userId,
+//         name: '',
+//         date: '',
+//         image: null,
+//       });
+//     }
+
+//     res.json(report);
+//   } catch (err) {
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// });
+
+app.get('/report/:userId', async (req, res) => {
+  try {
+    let report = await Report.find({ userId: req.params.userId }).sort({ date: -1 });
+
+    // If no reports exist for this user, optionally create a blank one
+    if (report.length === 0) {
+      const newReport = await Report.create({
+        userId: req.params.userId,
+        name: '',
+        date: '',
+        image: null,
+      });
+
+      return res.json([newReport]); // wrap in array
+    }
+
+    res.json(report);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
+
+
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server listening on port ${port}`);
 });
+
+
+
+const streamUploadFromPath = (filePath) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "profiles" },
+      (error, result) => {
+        if (result) {
+          // optionally delete the local file after upload
+          fs.unlink(filePath, () => {});
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+
+    // Pipe the file stream to Cloudinary
+    fs.createReadStream(filePath).pipe(stream);
+  });
+};
